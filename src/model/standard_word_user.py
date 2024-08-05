@@ -3,7 +3,6 @@ from sqlalchemy.orm import Mapped, mapped_column
 
 from src.db.base import Base
 
-
 class StandardWordUser(Base):
     __tablename__ = "standard_word_user"
 

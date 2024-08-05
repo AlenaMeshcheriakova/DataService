@@ -4,9 +4,7 @@ from src.dto.schema import UserCreateFullDTO, UserCreateTelegramDTO
 from src.data.user_orm import UserOrm
 from src.log.logger import log_decorator, CustomLogger
 
-
 class UserService:
-
     @staticmethod
     @log_decorator(my_logger=CustomLogger())
     def get_user_by_id(user_id: uuid.UUID) -> UserCreateFullDTO:

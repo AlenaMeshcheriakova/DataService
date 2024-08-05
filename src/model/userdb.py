@@ -1,10 +1,6 @@
-from typing import List
-
 from fastapi_users_db_sqlalchemy import SQLAlchemyBaseUserTableUUID
-from pydantic import Field
-from sqlalchemy.orm import Mapped, relationship, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column
 
-from src.model.word import Word
 from src.db.base import Base
 
 class UserDB(SQLAlchemyBaseUserTableUUID, Base):
@@ -24,7 +20,3 @@ class UserDB(SQLAlchemyBaseUserTableUUID, Base):
     training_length: Mapped[int] = mapped_column( default=10, nullable=True)
     created_at: Mapped[Base.get_created_at(self=Base)]
     updated_at: Mapped[Base.get_updated_at(self=Base)]
-
-    # words: Mapped[List["Word"]] = relationship(
-    #     back_populates="user"
-    # )

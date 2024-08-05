@@ -5,7 +5,6 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from src.db.base import Base
 
-
 class Word(Base):
     __tablename__ = "word"
 
@@ -25,7 +24,6 @@ class Word(Base):
     updated_at: Mapped[Base.get_updated_at(self=Base)]
 
     user: Mapped["src.model.userdb.UserDB"] = relationship(
-        # back_populates="words"
     )
 
     __table_args__ = (
