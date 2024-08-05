@@ -1,0 +1,53 @@
+syntax = "proto3";
+
+package processservice;
+
+import "google/protobuf/empty.proto";  // For methods that return empty
+import "src/grpc/word_service/word_service.proto";  // Import the file where GetListWordsByUserResponse is defined
+import "src/grpc/user_service/user_service.proto";  // Import the file where UserCreateFullDTOResponse is defined
+
+service ProcessService {
+    rpc start_learning_process (StartLearningProcessRequest) returns (LearningSetDTO);
+    rpc get_learning_set (GetLearningSetRequest) returns (LearningSetDTO);
+    rpc update_learning_progress (UpdateLearningProgressRequest) returns (google.protobuf.Empty);
+    rpc add_learning_set_to_cash (LearningSetDTO) returns (google.protobuf.Empty);
+}
+
+// Enum for Word Type
+enum WordTypeEnum {
+    STANDARD = 0;
+    CUSTOM = 1;
+    TEST_WORD_TYPE = 2;
+}
+
+// Enum for User Action
+enum UserActionEnum {
+    ALREADY_KNOW = 0;
+    BACK_TO_LEARNING = 1;
+    UNKNOWN_ACTION = 2;
+}
+
+message StartLearningProcessRequest {
+    string user_name = 1;
+    WordTypeEnum word_type = 2;
+}
+
+message GetLearningSetRequest {
+    string user_name = 1;
+    WordTypeEnum word_type = 2;
+}
+
+message UpdateLearningProgressRequest {
+    string user_id = 1;
+    string word_id = 2;
+    string german_word = 3;
+    UserActionEnum user_action = 4;
+    WordTypeEnum word_type = 5;
+}
+
+message LearningSetDTO {
+    user_service.UserCreateFullDTOResponse user = 1; //  from the imported file
+    wordservice.GetListWordDTOResponse words = 2;  //  from the imported file
+    int32 current_training_position = 3;
+}
+

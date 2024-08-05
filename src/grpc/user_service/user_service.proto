@@ -1,0 +1,73 @@
+syntax = "proto3";
+
+package user_service;
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/wrappers.proto";
+import "google/protobuf/timestamp.proto";
+
+
+message UserRequest {
+  string name = 1;
+  string email = 2;
+  string password = 3;
+  string telegram_id = 4;
+  int32 training_length = 5;
+}
+
+message UserIdRequest {
+  string request_id = 1;  // This will be a UUID string
+}
+
+message UserNameRequest {
+  string user_name = 1;
+}
+
+message UserTrainingLengthRequest {
+  string user_name = 1;
+  int32 training_length = 2;
+}
+
+message UserCreateTelegramDTORequest {
+  string id = 1;  // UUID is represented as a string
+  string user_name = 2;
+  int32 training_length = 3;
+  string telegram_user_id = 4;
+  string hashed_password = 5;
+  string email = 6;
+}
+
+// Response message containing a boolean value.
+message CheckResponse {
+  bool result = 1;
+}
+
+message UserIdResponse {
+  string user_id = 1;  // This will be a UUID string
+}
+
+message UserCreateFullDTOResponse {
+    string id = 1; // This will be a UUID string
+    string user_name = 2;
+    string telegram_user_id = 3;
+    int32 training_length = 4;
+    google.protobuf.Timestamp created_at = 5;
+    google.protobuf.Timestamp updated_at = 6;
+    string password = 7;
+    string hashed_password = 8;
+    string email = 9;
+    bool is_active = 10;
+    bool is_superuser = 11;
+    bool is_verified = 12;
+}
+
+
+service UserServiceGRPC {
+  rpc get_user_by_id (UserIdRequest) returns (UserCreateFullDTOResponse);
+  rpc get_user_by_name (UserNameRequest) returns (UserCreateFullDTOResponse);
+  rpc get_user_id_by_name (UserNameRequest) returns (UserIdResponse);
+  rpc update_user_training_length (UserTrainingLengthRequest) returns (google.protobuf.Empty);
+  rpc is_user_created (UserNameRequest) returns (CheckResponse);
+  rpc create_user_by_DTO (UserCreateTelegramDTORequest) returns (google.protobuf.Empty);
+  rpc create_user (UserRequest) returns (google.protobuf.Empty);
+}

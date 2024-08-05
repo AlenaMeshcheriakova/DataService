@@ -1,0 +1,73 @@
+syntax = "proto3";
+
+package wordservice;
+
+import "google/protobuf/empty.proto";
+
+message GetWordsByUserRequest {
+    string user_id = 1;  // UUID as a string
+    int32 training_length = 2;  // Optional with default
+}
+
+message AddNewWordFromDtoRequest {
+    string user_id = 1;
+    string german_word = 2;
+    string english_word = 3;
+    string russian_word = 4;
+    int32 amount_already_know = 5;
+    int32 amount_back_to_learning = 6;
+    string lang_level_id = 7;
+    string word_type_id = 8;
+    string group_id = 9;
+}
+
+message AddNewWordRequest {
+    string user_name = 1;
+    string german_word = 2;
+    string english_word = 3;
+    string russian_word = 4;
+    int32 amount_already_know = 5;
+    int32 amount_back_to_learning = 6;
+    string group_word_name = 7;
+    string level = 8;  // Enum or string
+    string word_type = 9;  // Enum or string
+}
+
+message WordDTOResponse{
+    string id = 1;
+    string user_id = 2;
+    string german_word = 3;
+    string english_word = 4;
+    string russian_word = 5;
+    int32 amount_already_know = 6;
+    int32 amount_back_to_learning = 7;
+    string lang_level_id = 8;
+    string word_type_id = 9;
+    string group_id = 10;
+}
+
+message GetWordsByUserResponse {
+    string user_id = 1;
+    string german_word = 2;
+    string english_word = 3;
+    string russian_word = 4;
+    int32 amount_already_know = 5;
+    int32 amount_back_to_learning = 6;
+    string lang_level_id = 7;
+    string word_type_id = 8;
+    string group_id = 9;
+}
+
+message GetListWordsByUserResponse {
+    repeated GetWordsByUserResponse words = 1;  // List of GetWordsByUserResponse objects
+}
+
+message GetListWordDTOResponse {
+    repeated WordDTOResponse word = 1;  // List of GetWordsByUserResponse objects
+}
+
+service WordService {
+    rpc get_words_by_user (GetWordsByUserRequest) returns (GetListWordsByUserResponse);
+    rpc add_new_word_from_dto (AddNewWordFromDtoRequest) returns (google.protobuf.Empty);
+    rpc add_new_word (AddNewWordRequest) returns (google.protobuf.Empty);
+}
