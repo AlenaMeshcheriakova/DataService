@@ -17,13 +17,13 @@ def serve():
     user_service_pb2_grpc.add_UserServiceGRPCServicer_to_server(UserServiceServicer(), server)
     word_service_pb2_grpc.add_WordServiceServicer_to_server(WordServiceServicer(), server)
     process_service_pb2_grpc.add_ProcessServiceServicer_to_server(ProcessServiceServicer(), server)
-    server.add_insecure_port('[::]:50051')
+    server.add_insecure_port(f'[::]:{settings.GRPC_PORT}')
     server.start()
 
     # Initialize custom logger
     logger_instance = CustomLogger()
     logger = logger_instance.get_logger(__name__)
-    logger.info("Server started on port 50051.")
+    logger.info(f"Server started on port {settings.GRPC_PORT}.")
 
     # Initialize Redis
     RedisImplementation(host=settings.get_REDIS_HOST,

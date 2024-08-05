@@ -15,6 +15,9 @@ class Settings(BaseSettings):
     REDIS_PORT: int
     REDIS_DECODE_RESPONSES: bool
 
+    GRPC_HOST: str
+    GRPC_PORT: int
+
     @property
     def get_DB_HOST(self)-> str:
         return self.DB_HOST
