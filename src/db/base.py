@@ -23,7 +23,6 @@ class Base(DeclarativeBase):
 
     def get_updated_at(self):
         updated_at = Annotated[datetime.datetime, mapped_column(
-                # server_default=text("TIMESTAMP('utc',  now())"),
                 server_default=text("TIMEZONE('utc', now())"),
                 onupdate=datetime.datetime.now,
             )]

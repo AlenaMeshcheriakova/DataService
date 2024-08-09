@@ -32,9 +32,3 @@ def cleanup(request):
                 session.execute(table.delete())
             session.commit()
     request.addfinalizer(remove_test_dir)
-
-
-# @pytest.fixture(scope="session")
-# def ac() -> Generator[Session, None, None]:
-#     with Client(app=app, base_url="http://test") as ac:
-#         yield ac

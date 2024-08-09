@@ -21,3 +21,5 @@ class Group(Base):
         UniqueConstraint('group_name', 'user_id', name='uq_group_name_user_id'),
     )
 
+    def as_dict(self):
+        return {c.name: getattr(self, c.name) for c in self.__table__.columns}

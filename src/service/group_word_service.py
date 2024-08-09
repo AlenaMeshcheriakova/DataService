@@ -1,8 +1,10 @@
 from typing import List
 from uuid import UUID
 
+from action_dwh_enum import ActionDWHEnum
 from src.dto.schema import GroupAddDTO
 from src.data.group_orm import GroupOrm
+from src.dwh.dwh_service import DwhService
 from src.log.logger import log_decorator, CustomLogger
 
 
@@ -30,7 +32,8 @@ class GroupWordService:
         @param new_group: new group
         @return: None
         """
-        GroupOrm.insert_group(new_group)
+        added_group = GroupOrm.insert_group(new_group)
+        DwhService.send('Group', added_group, ActionDWHEnum.CREATED, "New group from DTO was added")
 
     @staticmethod
     @log_decorator(my_logger=CustomLogger())

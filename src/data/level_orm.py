@@ -1,5 +1,5 @@
 import uuid
-from typing import List
+from typing import List, Dict
 import logging
 
 from sqlalchemy import insert, select
@@ -17,18 +17,23 @@ class LevelOrm(BaseOrm):
     """
     @staticmethod
     @log_decorator(my_logger=CustomLogger())
-    def insert_all_levels() -> None:
+    def insert_all_levels() -> List[Dict]:
         """
         Create all necessary level in DB.
         Level information get from LevelEnum
         @return: None
         """
+        created_levels = list()
         with session_factory() as session:
             for level in LevelEnum:
                 new_level = LevelAddDTO(lang_level=level, id=uuid.uuid4())
-                stmt = insert(Level).values(**new_level.dict())
-                session.execute(stmt)
+                stmt = insert(Level).values(**new_level.dict()).returning(Level)
+                result = session.execute(stmt)
+                created_level = result.fetchone()
+                if created_level:
+                    created_levels.append(created_level[0].as_dict())
             session.commit()
+        return created_levels
 
     @staticmethod
     @log_decorator(my_logger=CustomLogger())

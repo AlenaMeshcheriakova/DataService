@@ -1,6 +1,8 @@
 import uuid
 from typing import List
 
+from action_dwh_enum import ActionDWHEnum
+from src.dwh.dwh_service import DwhService
 from src.model.level_enum import LevelEnum
 from src.dto.schema import WordGetDTO, WordAddDTO, WordDTO
 from src.data.word_orm import WordOrm
@@ -41,7 +43,8 @@ class WordService:
             "id": uuid.uuid4()
         })
         new_word = WordDTO(**word_data)
-        WordOrm.add_word(new_word)
+        added_word = WordOrm.add_word(new_word)
+        DwhService.send('Word', added_word, ActionDWHEnum.CREATED, "New word from DTO was added")
 
 
     @staticmethod
@@ -85,4 +88,6 @@ class WordService:
                 'group_id': group_word_id
             }
         )
-        WordOrm.add_word(wordAddDTO)
+        added_word = WordOrm.add_word(wordAddDTO)
+        DwhService.send('Word', added_word, ActionDWHEnum.CREATED, "New word was added")
+

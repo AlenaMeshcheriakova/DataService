@@ -30,9 +30,16 @@ class GroupOrm(BaseOrm):
         """
         with session_factory() as session:
             group_name.id = uuid.uuid4()
-            stmt = insert(Group).values(**group_name.dict())
-            session.execute(stmt)
+            stmt = insert(Group).values(**group_name.dict()).returning(Group)
+            result = session.execute(stmt)
             session.commit()
+
+            created_group = result.fetchone()
+            if created_group:
+                return created_group[0]
+            else:
+                raise RuntimeError("Failed to retrieve created group")
+        return None
 
     @log_decorator(my_logger=CustomLogger())
     @staticmethod

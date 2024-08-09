@@ -1,7 +1,9 @@
 import uuid
 
+from action_dwh_enum import ActionDWHEnum
 from src.dto.schema import UserCreateFullDTO, UserCreateTelegramDTO
 from src.data.user_orm import UserOrm
+from src.dwh.dwh_service import DwhService
 from src.log.logger import log_decorator, CustomLogger
 
 class UserService:
@@ -46,7 +48,8 @@ class UserService:
         @param user_name: user_name
         @return: None
         """
-        UserOrm.update_training_length(user_name, new_training_length)
+        updated_user = UserOrm.update_training_length(user_name, new_training_length)
+        DwhService.send('User', updated_user, ActionDWHEnum.UPDATED, "Training length was updated for user")
 
     @staticmethod
     @log_decorator(my_logger=CustomLogger())
@@ -70,7 +73,8 @@ class UserService:
         @param new_user: UserCreateTelegramDTO
         @return: None
         """
-        UserOrm.create_user(new_user)
+        createdUser = UserOrm.create_user(new_user)
+        DwhService.send('User', createdUser, ActionDWHEnum.UPDATED, "Create new user")
 
     @staticmethod
     @log_decorator(my_logger=CustomLogger())
@@ -92,4 +96,5 @@ class UserService:
             hashed_password=str(password),
             email=email
         )
-        UserOrm.create_user(new_user)
+        createdUser = UserOrm.create_user(new_user)
+        DwhService.send('User', createdUser, ActionDWHEnum.UPDATED, "Create new user")

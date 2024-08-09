@@ -1,7 +1,9 @@
 from typing import List
 from uuid import UUID
 
+from action_dwh_enum import ActionDWHEnum
 from src.dto.schema import LevelDTO
+from src.dwh.dwh_service import DwhService
 from src.log.logger import log_decorator, CustomLogger
 from src.model.level_enum import LevelEnum
 from src.data.level_orm import LevelOrm
@@ -15,7 +17,12 @@ class LevelService:
         Create all standard levels (from LevelEnum) in DB.
         @return: None
         """
-        LevelOrm.insert_all_levels()
+        added_levels = LevelOrm.insert_all_levels()
+        for added_level in added_levels:
+            DwhService.send('Level',
+                            added_level,
+                            ActionDWHEnum.CREATED,
+                            "New level was added")
 
     @staticmethod
     @log_decorator(my_logger=CustomLogger())

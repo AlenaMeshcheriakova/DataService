@@ -76,6 +76,8 @@ class WordGetDTO(BaseModel):
     lang_level_id: uuid.UUID
     word_type_id: uuid.UUID
     group_id: uuid.UUID
+    created_at: datetime
+    updated_at: datetime
 
 #---------------------StandardWordUser---------------------
 class StandardWordAddDTO(BaseModel):

@@ -34,20 +34,28 @@ class UserOrm(BaseOrm):
                 return None
 
     @staticmethod
-    def update_training_length(user_name:str, new_training_length: int) -> None:
+    def update_training_length(user_name:str, new_training_length: int) -> UserDB:
         """
         Update Training Length for user by user_name
         Should be more than 1
-        @return:
+        @return: UserDB - user which was changed
         """
         with session_factory() as session:
             stmt = update(UserDB).filter_by(
                 user_name=user_name
             ).values(
                 training_length=new_training_length
-            )
-            session.execute(stmt)
+            ).returning(UserDB)
+            result = session.execute(stmt)
             session.commit()
+
+            updated_user = result.fetchone()
+            if updated_user:
+                updated_user[0]
+            else:
+                raise RuntimeError("Failed to retrieve created user")
+
+        return None
 
     @staticmethod
     @log_decorator(my_logger=CustomLogger())
@@ -66,17 +74,20 @@ class UserOrm(BaseOrm):
 
     @staticmethod
     @log_decorator(my_logger=CustomLogger())
-    def create_user(new_user: UserCreateTelegramDTO) -> None:
+    def create_user(new_user: UserCreateTelegramDTO) -> UserDB:
         """
         Create user by DTO
         @param new_user: user which will be created
-        @return: None
+        @return: UserDB - user which was created
         """
         with session_factory() as session:
             logging.info('Class UserOrm.create_user: start session')
             new_user = UserDB(**new_user.dict())
             session.add(new_user)
             session.commit()
+
+            fetched_user = session.query(UserDB).filter_by(id=new_user.id).one_or_none()
+            return fetched_user
 
 
 
