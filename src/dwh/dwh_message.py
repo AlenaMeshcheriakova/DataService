@@ -2,6 +2,8 @@ import json
 import uuid
 from typing import Any
 
+from pydantic import BaseModel
+
 from UUIDEncoder import UUIDEncoder
 from action_dwh_enum import ActionDWHEnum
 
@@ -38,6 +40,8 @@ class DwhMessage:
             obj_dict = self.object
         elif isinstance(self.object, str):
             obj_dict = str(self.object)
+        elif isinstance(self.object, BaseModel):
+            obj_dict = self.object.dict()
         else:
             obj_dict = self.object.as_dict()
         dwh_message_dict['object'] = json.dumps(obj_dict, cls=UUIDEncoder)

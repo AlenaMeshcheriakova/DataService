@@ -1,53 +1,63 @@
 import uuid
 from datetime import datetime
 from typing import Optional, List
-from pydantic import BaseModel, Field, EmailStr, RootModel
-from fastapi_users import schemas
+from pydantic import BaseModel, Field, RootModel, EmailStr
 
-from src.model.level import LevelEnum
-from src.model.word_type_enum import WordTypeEnum
 
+# ---------------------AUTH---------------------
+class UserResponse(BaseModel):
+    username: str
+    message: str
+
+class RegisterRequest(BaseModel):
+    username: str
+    password: str
+    email: EmailStr
+    telegram_user_id: str
 
 #---------------------User---------------------
 
-class UserDTO(schemas.BaseUser):
-    # id: uuid.UUID
+class UserDTO(BaseModel):
+    auth_user_id: Optional[uuid.UUID]
     user_name: str = Field(max_length=35)
     training_length: int = Field(ge=0)
     created_at: datetime
     updated_at: datetime
 
-class UserDTOUpdate(schemas.BaseUser):
+class UserDTOUpdate(BaseModel):
+    auth_user_id: Optional[uuid.UUID] = None
     user_name: str = Field(max_length=35)
     training_length: int = Field(ge=0)
     created_at: datetime
     updated_at: datetime
 
-class UserCreateDTO(schemas.BaseUser):
+class UserCreateDTO(BaseModel):
+    auth_user_id: Optional[uuid.UUID] = None
     user_name: str = Field(max_length=35)
     training_length: int = Field(ge=0)
 
-class UserCreateTelegramDTO(schemas.BaseUser):
+class UserCreateTelegramDTO(BaseModel):
+    id: uuid.UUID
+    auth_user_id: Optional[uuid.UUID] = None
+    user_name: str = Field(max_length=35)
+    training_length: int = Field(ge=0)
+
+class UserAuthTelegramDTO(BaseModel):
+    id: uuid.UUID
+    auth_user_id: Optional[uuid.UUID] = None
+    user_name: str = Field(max_length=35)
+    training_length: int = Field(ge=0)
+    password: str
+    email: EmailStr
+    telegram_user_id: str
+
+class UserCreateFullDTO(BaseModel):
     id: uuid.UUID
     user_name: str = Field(max_length=35)
     training_length: int = Field(ge=0)
-    telegram_user_id: str = Field(max_length=35)
-    hashed_password: Optional[str] = None
-    email: Optional[EmailStr] = None
-
-class UserCreateFullDTO(schemas.BaseUser):
-    id: uuid.UUID
-    user_name: str = Field(max_length=35)
-    telegram_user_id: str = Field(max_length=35)
-    training_length: int = Field(ge=0)
+    auth_user_id: Optional[uuid.UUID] = None
     created_at: datetime
     updated_at: datetime
-    password: Optional[str] = None
-    hashed_password: Optional[str] = None
-    email: Optional[EmailStr] = None
-    is_active: Optional[bool] = None
-    is_superuser: Optional[bool] = None
-    is_verified: Optional[bool] = None
 
 #---------------------Word---------------------
 class WordAddDTO(BaseModel):
@@ -76,8 +86,23 @@ class WordGetDTO(BaseModel):
     lang_level_id: uuid.UUID
     word_type_id: uuid.UUID
     group_id: uuid.UUID
-    created_at: datetime
-    updated_at: datetime
+
+
+def convert_word_dto_to_word_get_dto(training_set: List[WordDTO]) -> List[WordGetDTO]:
+    return [
+        WordGetDTO(
+            user_id=word.user_id,
+            german_word=word.german_word,
+            english_word=word.english_word,
+            russian_word=word.russian_word,
+            amount_already_know=word.amount_already_know,
+            amount_back_to_learning=word.amount_back_to_learning,
+            lang_level_id=word.lang_level_id,
+            word_type_id=word.word_type_id,
+            group_id=word.group_id
+        )
+        for word in training_set
+    ]
 
 #---------------------StandardWordUser---------------------
 class StandardWordAddDTO(BaseModel):
@@ -115,24 +140,35 @@ class GroupList(RootModel):
 
 class LevelAddDTO(BaseModel):
     id: uuid.UUID
-    lang_level: LevelEnum
+    lang_level: str = Field(max_length=256)
 
 class LevelDTO(BaseModel):
-    lang_level: LevelEnum
+    lang_level: str = Field(max_length=256)
+    created_at: datetime
+    updated_at: datetime
+
+class LevelFullDTO(LevelAddDTO):
     created_at: datetime
     updated_at: datetime
 
 class LevelList(RootModel):
     root: List[LevelDTO]
 
+def convert_full_level_dto_to_level_dto(level: LevelFullDTO) -> LevelDTO:
+    return LevelDTO(
+        lang_level=level.lang_level,
+        created_at=level.created_at,
+        updated_at=level.updated_at
+    )
+
 #---------------------WordType---------------------
 
 class WordTypeAddDTO(BaseModel):
     id: uuid.UUID
-    word_type: WordTypeEnum
+    word_type: str = Field(max_length=256)
 
 class WordTypeDTO(BaseModel):
-    word_type: WordTypeEnum
+    word_type: str = Field(max_length=256)
     created_at: datetime
     updated_at: datetime
 

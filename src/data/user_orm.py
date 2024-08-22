@@ -28,7 +28,14 @@ class UserOrm(BaseOrm):
             result = session.execute(query)
             res_all = result.scalars().first()
             if res_all:
-                user = UserCreateFullDTO.model_validate(res_all)
+                user = UserCreateFullDTO(
+                    id=res_all.id,
+                    user_name=res_all.user_name,
+                    training_length=res_all.training_length,
+                    auth_user_id=res_all.auth_user_id,
+                    created_at=res_all.created_at,
+                    updated_at=res_all.updated_at
+                )
                 return user
             else:
                 return None
@@ -59,7 +66,7 @@ class UserOrm(BaseOrm):
 
     @staticmethod
     @log_decorator(my_logger=CustomLogger())
-    def find_user_by_id(user_id: uuid.UUID) -> UserCreateFullDTO:
+    def find_user_by_id(user_id: uuid.UUID) -> Union[UserCreateFullDTO, None]:
         """
         Get User object by user_id
         @param user_id: user_id
@@ -69,8 +76,19 @@ class UserOrm(BaseOrm):
             logging.info('Class UserOrm.find_user_by_id: start session')
             query = select(UserDB).filter_by(id=user_id)
             result = session.execute(query)
-            user: UserCreateFullDTO = UserCreateFullDTO.parse_obj(result.scalars().first())
-            return user
+            res_all = result.scalars().first()
+            if res_all:
+                user = UserCreateFullDTO(
+                    id=res_all.id,
+                    user_name=res_all.user_name,
+                    training_length=res_all.training_length,
+                    auth_user_id=res_all.auth_user_id,
+                    created_at=res_all.created_at,
+                    updated_at=res_all.updated_at
+                )
+                return user
+            else:
+                return None
 
     @staticmethod
     @log_decorator(my_logger=CustomLogger())

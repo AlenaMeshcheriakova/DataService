@@ -18,6 +18,9 @@ class Settings(BaseSettings):
     GRPC_HOST: str
     GRPC_PORT: int
 
+    GRPC_AUTH_HOST: str
+    GRPC_AUTH_PORT: int
+
     MQ_HOST: str
 
     @property
@@ -64,7 +67,12 @@ class Settings(BaseSettings):
     def get_REDIS_DECODE_RESPONSES(self) -> bool:
         return self.REDIS_DECODE_RESPONSES
 
-    model_config = SettingsConfigDict(env_file="../../cfg/development/.env")
+    @property
+    def get_AUTH_GRPC_conn(self) -> str:
+        return f"{self.GRPC_AUTH_HOST}:{str(self.GRPC_AUTH_PORT)}"
+
+
+    model_config = SettingsConfigDict(env_file="cfg/development/.env")
 
 load_dotenv()
 settings = Settings()

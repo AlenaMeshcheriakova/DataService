@@ -1,20 +1,18 @@
 import uuid
-from _pydatetime import datetime
 
-from src.dto.schema import UserCreateTelegramDTO
+from src.dto.schema import UserAuthTelegramDTO
 from src.grpc.mapping_helper import pydantic_to_protobuf
 from src.grpc.user_service import user_service_pb2
 from src.grpc.user_service.user_service_pb2_grpc import UserServiceGRPCServicer
 from src.log.logger import log_decorator, CustomLogger
 from src.service.user_service import UserService
-from google.protobuf import timestamp_pb2
 from google.protobuf import empty_pb2
 
 class UserServiceServicer(UserServiceGRPCServicer):
 
     @log_decorator(my_logger=CustomLogger())
     def get_user_by_id(self, request, context) -> user_service_pb2.UserCreateFullDTOResponse:
-        user_id = request.user_id
+        user_id = request.request_id
         user_dto = UserService.get_user_by_id(user_id)
 
         # Create a mapping template
@@ -72,13 +70,16 @@ class UserServiceServicer(UserServiceGRPCServicer):
 
     @log_decorator(my_logger=CustomLogger())
     def create_user_by_DTO(self, request, context):
-        user_dto = UserCreateTelegramDTO.model_validate(request)
+        user_dto = UserAuthTelegramDTO.model_validate(request)
         UserService.create_user_by_DTO(user_dto)
-
         return empty_pb2.Empty()
 
     @log_decorator(my_logger=CustomLogger())
     def create_user(self, request, context) -> empty_pb2.Empty:
-        UserService.create_user(request.name, request.email, request.password,
-                                      request.telegram_id, request.training_length )
+        UserService.create_user(
+            request.name,
+            request.password,
+            request.email,
+            request.telegram_user_id,
+            request.training_length)
         return empty_pb2.Empty()
