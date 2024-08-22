@@ -20,14 +20,15 @@ class WordServiceServicer(WordServiceServicer):
         words: List[WordGetDTO] = WordService.get_words_by_user(user_id, training_length)
 
         response = word_service_pb2.GetListWordsByUserResponse()
+        word_list = []
         for word in words:
             # Create a mapping template
             word_field_mapping = {k: k for k, v in word.dict().items()}
 
             # Convert Pydantic model to Protobuf response
             response_line = pydantic_to_protobuf(word, word_service_pb2.GetWordsByUserResponse, word_field_mapping)
-            print(response_line)
-            setattr(response, words, str(response_line))
+            word_list.append(response_line)
+        response = word_service_pb2.GetListWordsByUserResponse(words=word_list)
 
         context.set_details("Response details: " + str(response))
         return response

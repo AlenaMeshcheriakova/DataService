@@ -4,7 +4,7 @@ from typing import List
 from action_dwh_enum import ActionDWHEnum
 from src.dwh.dwh_service import DwhService
 from src.model.level_enum import LevelEnum
-from src.dto.schema import WordGetDTO, WordAddDTO, WordDTO
+from src.dto.schema import WordGetDTO, WordAddDTO, WordDTO, convert_word_dto_to_word_get_dto
 from src.data.word_orm import WordOrm
 from src.log.logger import log_decorator, CustomLogger
 from src.service.group_word_service import GroupWordService
@@ -26,8 +26,8 @@ class WordService:
         @param training_length: training length (10 by default)
         @return:
         """
-        # TODO CRIT: Check is it needed?
-        training_set: List[WordGetDTO] = WordOrm.find_words_by_user_id(user_id, training_length, word_type)
+        training_set: List[WordDTO] = WordOrm.find_words_by_user_id(user_id, training_length, word_type)
+        training_set: List[WordGetDTO] = convert_word_dto_to_word_get_dto(training_set)
         return training_set
 
     @staticmethod

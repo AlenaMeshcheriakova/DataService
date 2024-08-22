@@ -1,0 +1,57 @@
+syntax = "proto3";
+
+package group_service;
+
+import "google/protobuf/empty.proto";
+
+message GroupAddDTO {
+    string id = 1;
+    string group_name = 2;
+    string user_id = 3;
+}
+
+message GetGroupsNameByUserNameRequest {
+    string user_name = 1;
+}
+
+message GetGroupsNameByUserNameResponse {
+    repeated string group_names = 1;
+}
+
+message CreateGroupRequest {
+    GroupAddDTO new_group = 1;
+}
+
+message GetGroupIdByGroupNameRequest {
+    string group_name = 1;
+}
+
+message GetGroupIdByGroupNameResponse {
+    string group_id = 1;
+}
+
+message IsGroupCreatedRequest {
+    string group_name = 1;
+}
+
+message IsGroupCreatedResponse {
+    bool created = 1;
+}
+
+message UpdateGroupRequest {
+    string group_id = 1;
+    string new_group_name = 2;
+}
+
+message DeleteGroupRequest {
+    string group_id = 1;
+}
+
+service GroupService {
+    rpc get_groups_name_by_user_name(GetGroupsNameByUserNameRequest) returns (GetGroupsNameByUserNameResponse);
+    rpc create_group(CreateGroupRequest) returns (google.protobuf.Empty);
+    rpc get_group_id_by_group_name(GetGroupIdByGroupNameRequest) returns (GetGroupIdByGroupNameResponse);
+    rpc is_group_created(IsGroupCreatedRequest) returns (IsGroupCreatedResponse);
+    rpc update_group(UpdateGroupRequest) returns (google.protobuf.Empty);
+    rpc delete_group(DeleteGroupRequest) returns (google.protobuf.Empty);
+}

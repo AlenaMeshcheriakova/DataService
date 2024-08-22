@@ -7,7 +7,7 @@ class Level(Base):
     __tablename__ = "lang_level"
 
     id: Mapped[Base.get_intpk(self=Base)]
-    lang_level: Mapped[LevelEnum] = mapped_column(unique=True, nullable=False)
+    lang_level: Mapped[str] = mapped_column(unique=True, nullable=False)
     created_at: Mapped[Base.get_created_at(self=Base)]
     updated_at: Mapped[Base.get_updated_at(self=Base)]
 

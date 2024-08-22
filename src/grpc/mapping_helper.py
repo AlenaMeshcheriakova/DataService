@@ -1,10 +1,12 @@
 import uuid
 from datetime import datetime
+from enum import Enum
 from typing import Type, TypeVar, Dict, Any
 from pydantic import BaseModel
 
 from google.protobuf import timestamp_pb2, wrappers_pb2
 
+from level_enum import LevelEnum
 from src.dto.learning_set import LearningSet
 from src.dto.schema import UserCreateFullDTO, WordDTO
 from src.grpc.process_service import process_service_pb2
@@ -80,6 +82,8 @@ def pydantic_to_protobuf(pydantic_model: Any, protobuf_class: Type[Any], field_m
                 proto_message.__setattr__(protobuf_field, timestamp)
         elif isinstance(value, uuid.UUID):
             setattr(proto_message, protobuf_field, str(value))
+        elif isinstance(value, Enum):
+            setattr(proto_message, protobuf_field, value)
         elif isinstance(value, str):
             # Handle StringValue wrapper field
             setattr(proto_message, protobuf_field, value)
@@ -101,8 +105,7 @@ def learning_set_to_protobuf(learning_set: LearningSet) -> Any:
 
     words_list = []
     for word in learning_set.words:
-        response_line = pydantic_to_protobuf(word, word_service_pb2.WordDTOResponse,
-                                             word_mapping)
+        response_line = pydantic_to_protobuf(word, word_service_pb2.WordDTOResponse, word_mapping)
         words_list.append(response_line)
 
     response_words = word_service_pb2.GetListWordDTOResponse(
@@ -135,3 +138,15 @@ def learning_set_from_protobuf(request: Any) -> LearningSet:
     # Create LearningSet
     learning_set = LearningSet(user, words, current_training_position)
     return learning_set
+
+
+def convert_protobuf_level_enum_to_python_enum(protobuf_enum_value: int) -> LevelEnum:
+    mapping = {
+        1: LevelEnum.a1,
+        2: LevelEnum.a2,
+        3: LevelEnum.b1,
+        4: LevelEnum.b2,
+        5: LevelEnum.c1,
+        6: LevelEnum.c2
+    }
+    return mapping.get(protobuf_enum_value)
