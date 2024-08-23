@@ -6,3 +6,6 @@
 /.venv/
 *.pyc
 __pycache__/
+.idea
+/src/db/add_standard_data/addding_words.csv
+/cfg/__pycache__/
