@@ -1,0 +1,8 @@
+/help
+/cfg/development/
+/cfg/production/
+/cfg/testing/
+/log/
+/.venv/
+*.pyc
+__pycache__/
