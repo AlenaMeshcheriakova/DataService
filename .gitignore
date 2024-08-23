@@ -6,3 +6,8 @@
 /.venv/
 *.pyc
 __pycache__/
+.idea/
+# Ignore alembic's runtime files
+alembic.ini.bak
+alembic/__pycache__/
+/src/db/add_standard_data/addding_words.csv
