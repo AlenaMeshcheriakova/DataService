@@ -11,3 +11,4 @@ __pycache__/
 alembic.ini.bak
 alembic/__pycache__/
 /src/db/add_standard_data/addding_words.csv
+/cfg/__pycache__/
