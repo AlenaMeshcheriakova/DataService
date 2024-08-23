@@ -1,11 +1,9 @@
 import json
-import uuid
 from typing import Any
 
 from pydantic import BaseModel
-
-from UUIDEncoder import UUIDEncoder
-from action_dwh_enum import ActionDWHEnum
+from src.model import UUIDEncoder
+from src.model.action_dwh_enum import ActionDWHEnum
 
 
 class DwhMessage:

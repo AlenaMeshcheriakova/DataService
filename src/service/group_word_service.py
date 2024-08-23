@@ -1,7 +1,7 @@
 from typing import List
 from uuid import UUID
 
-from action_dwh_enum import ActionDWHEnum
+from src.model.action_dwh_enum import ActionDWHEnum
 from src.dto.schema import GroupAddDTO
 from src.data.group_orm import GroupOrm
 from src.dwh.dwh_service import DwhService

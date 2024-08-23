@@ -1,9 +1,10 @@
 import uuid
+from unittest.mock import patch
 
 import pytest
 from sqlalchemy import select
 
-from level_enum import LevelEnum
+from src.model.level_enum import LevelEnum
 from src.model.group import Group
 from src.db.database import session_factory
 from src.dto.schema import GroupAddDTO, GroupDTO, GroupList
@@ -28,19 +29,20 @@ class TestGroupWordService:
             user_id= DataPreparation.TEST_USER_ID
         )
 
-        # Do tests
-        GroupWordService.create_group(group_dta)
+        with patch('src.dwh.dwh_service.DwhService.send') as mock:
+            # Do tests
+            GroupWordService.create_group(group_dta)
 
-        # Check results
-        with session_factory() as session:
-            stmt = select(Group).filter_by(group_name=DataPreparation.TEST_GROUP_NAME)
-            result = session.execute(stmt)
-            all_ = result.scalars().all()
-            group_dto = GroupDTO.model_validate(all_[0], from_attributes=True)
+            # Check results
+            with session_factory() as session:
+                stmt = select(Group).filter_by(group_name=DataPreparation.TEST_GROUP_NAME)
+                result = session.execute(stmt)
+                all_ = result.scalars().all()
+                group_dto = GroupDTO.model_validate(all_[0], from_attributes=True)
 
-            assert len(all_) == 1
-            assert group_dto.group_name == DataPreparation.TEST_GROUP_NAME
-            assert group_dto.id != test_id
+                assert len(all_) == 1
+                assert group_dto.group_name == DataPreparation.TEST_GROUP_NAME
+                assert group_dto.id != test_id
 
     def test_insert_two_groups_with_similar_name(self, create_test_user):
         """
@@ -55,22 +57,23 @@ class TestGroupWordService:
         )
 
         # Do tests
-        with pytest.raises(Exception) as excinfo:
-            GroupWordService.create_group(group_dta)
-            GroupWordService.create_group(group_dta)
+        with patch('src.dwh.dwh_service.DwhService.send') as mock:
+            with pytest.raises(Exception) as excinfo:
+                GroupWordService.create_group(group_dta)
+                GroupWordService.create_group(group_dta)
 
-        # Check results
-        assert 'unique constraint' in str(excinfo.value)
+            # Check results
+            assert 'unique constraint' in str(excinfo.value)
 
-        with session_factory() as session:
-            stmt = select(Group).filter_by(group_name=DataPreparation.TEST_GROUP_NAME)
-            result = session.execute(stmt)
-            all_ = result.scalars().all()
-            group_dtos = GroupList.model_validate(all_, from_attributes=True)
+            with session_factory() as session:
+                stmt = select(Group).filter_by(group_name=DataPreparation.TEST_GROUP_NAME)
+                result = session.execute(stmt)
+                all_ = result.scalars().all()
+                group_dtos = GroupList.model_validate(all_, from_attributes=True)
 
-            assert len(group_dtos.root) == 1
-            for group_dto in group_dtos.root:
-                assert group_dto.group_name == DataPreparation.TEST_GROUP_NAME
+                assert len(group_dtos.root) == 1
+                for group_dto in group_dtos.root:
+                    assert group_dto.group_name == DataPreparation.TEST_GROUP_NAME
 
 
     def test_get_group_id_by_group_name(self, create_test_user, create_test_group):
@@ -88,16 +91,17 @@ class TestGroupWordService:
         """
         Check ability to get group id by name in GroupOrm
         """
-        # Prepare data
-        WordService.add_new_word(DataPreparation.TEST_USER_NAME, "GERMAN_WORD", "ENGLISH_WORD",
-                               "RUSSIAN_WORD", 0, 0,
-                                 group_word_name =DataPreparation.TEST_GROUP_NAME, level = LevelEnum.a1,
-                                 word_type=DataPreparation.TEST_WORD_TYPE)
+        with patch('src.dwh.dwh_service.DwhService.send') as mock:
+            # Prepare data
+            WordService.add_new_word(DataPreparation.TEST_USER_NAME, "GERMAN_WORD", "ENGLISH_WORD",
+                                   "RUSSIAN_WORD", 0, 0,
+                                     group_word_name =DataPreparation.TEST_GROUP_NAME, level = LevelEnum.a1,
+                                     word_type=DataPreparation.TEST_WORD_TYPE)
 
-        # Do tests
-        result = GroupWordService.get_groups_name_by_user_name(DataPreparation.TEST_GROUP_NAME)
+            # Do tests
+            result = GroupWordService.get_groups_name_by_user_name(DataPreparation.TEST_GROUP_NAME)
 
-        # Check results
-        assert len(result) == 2
-        for group_name in result:
-            assert group_name in [DataPreparation.TEST_GROUP_NAME, DataPreparation.TEST_COMMON_GROUP_NAME]
+            # Check results
+            assert len(result) == 2
+            for group_name in result:
+                assert group_name in [DataPreparation.TEST_GROUP_NAME, DataPreparation.TEST_COMMON_GROUP_NAME]

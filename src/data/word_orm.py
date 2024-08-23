@@ -19,7 +19,7 @@ class WordOrm(BaseOrm):
     @staticmethod
     @log_decorator(my_logger=CustomLogger())
     def find_words_by_user_id(user_id: UUID, training_length: int = 10,
-                              word_type: WordTypeEnum = WordTypeEnum.custom) -> List[WordDTO]:
+                              word_type: str = WordTypeEnum.custom.value) -> List[WordDTO]:
         """
         Find set of words for next training for user with user_id and limited by total_length
         @param training_length: length of selected set
@@ -66,7 +66,7 @@ class WordOrm(BaseOrm):
     @staticmethod
     @log_decorator(my_logger=CustomLogger())
     def find_words_for_standard_type(user_id: UUID, training_length: int = 10,
-                              word_type: WordTypeEnum = WordTypeEnum.standard) -> List[WordDTO]:
+                              word_type: str = WordTypeEnum.standard.value) -> List[WordDTO]:
         """
         GET INFORMATION FROM TABLE STANDARD_WORD_USER
         Find set of words for next standard word training with user training count amounts

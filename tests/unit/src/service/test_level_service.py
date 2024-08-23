@@ -1,4 +1,5 @@
 import uuid
+from unittest.mock import patch
 
 from sqlalchemy import select, insert
 from src.model.level import Level
@@ -16,33 +17,35 @@ class TestLevelService:
         """
         Positive test for creating all levels
         """
-        # Do tests
-        LevelService.create_levels()
+        with patch('src.dwh.dwh_service.DwhService.send') as mock:
+            # Do tests
+            LevelService.create_levels()
 
-        # Check results
-        with session_factory() as session:
-            stmt = select(Level)
-            result = session.execute(stmt)
-            all_levels = result.scalars().all()
+            # Check results
+            with session_factory() as session:
+                stmt = select(Level)
+                result = session.execute(stmt)
+                all_levels = result.scalars().all()
 
-            assert len(all_levels) == 6
-            for level in all_levels:
-                assert level.lang_level in LevelEnum
+                assert len(all_levels) == 6
+                for level in all_levels:
+                    assert level.lang_level in LevelEnum
 
     def test_get_levels(self):
         """
         Positive test for get_all_levels
         """
-        # Prepare data
-        LevelService.create_levels()
+        with patch('src.dwh.dwh_service.DwhService.send') as mock:
+            # Prepare data
+            LevelService.create_levels()
 
-        # Do tests
-        levels = LevelService.get_levels()
+            # Do tests
+            levels = LevelService.get_levels()
 
-        # Check results
-        assert len(levels) == 6
-        for level in levels:
-            assert level.lang_level in LevelEnum
+            # Check results
+            assert len(levels) == 6
+            for level in levels:
+                assert level.lang_level in LevelEnum
 
     def test_get_level_id_by_name(self):
         """

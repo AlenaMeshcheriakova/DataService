@@ -1,7 +1,7 @@
 import uuid
 from typing import List
 
-from action_dwh_enum import ActionDWHEnum
+from src.model.action_dwh_enum import ActionDWHEnum
 from src.dwh.dwh_service import DwhService
 from src.model.level_enum import LevelEnum
 from src.dto.schema import WordGetDTO, WordAddDTO, WordDTO, convert_word_dto_to_word_get_dto
@@ -19,7 +19,7 @@ class WordService:
     @staticmethod
     @log_decorator(my_logger=CustomLogger())
     def get_words_by_user(user_id: uuid.UUID, training_length: int = 10,
-                              word_type: WordTypeEnum = WordTypeEnum.custom) -> List[WordGetDTO]:
+                              word_type: str = WordTypeEnum.custom.value) -> List[WordGetDTO]:
         """
         Find set of words with training length for next training for user with user_id and limited by training_length
         @param user_id: user_id
@@ -51,8 +51,8 @@ class WordService:
     @log_decorator(my_logger=CustomLogger())
     def add_new_word(user_name: str, german_word: str, english_word: str, russian_word: str,
                      amount_already_know: int = 0, amount_back_to_learning: int = 0,
-                     group_word_name: str = "CUSTOM_GROUP", level: LevelEnum = LevelEnum.a1,
-                     word_type: WordTypeEnum = WordTypeEnum.custom) -> None:
+                     group_word_name: str = "CUSTOM_GROUP", level: str = LevelEnum.a1.value,
+                     word_type: str = WordTypeEnum.custom) -> None:
         """
         Add new Word for user by parameters
         @param user_name: user_name (Find User Id first)

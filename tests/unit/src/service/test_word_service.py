@@ -1,6 +1,7 @@
 import uuid
+from unittest.mock import patch
 
-from level_enum import LevelEnum
+from src.model.level_enum import LevelEnum
 from src.data.word_orm import WordOrm
 from src.db.database import session_factory
 from sqlalchemy import select
@@ -85,67 +86,68 @@ class TestWordService:
         """
         Positive Test for method add_word
         """
+        with patch('src.dwh.dwh_service.DwhService.send') as mock:
+            # Prepare data
+            word = DataPreparation.TEST_WORD
+            tested_word = WordAddDTO(
+                user_id= DataPreparation.TEST_USER_ID,
+                german_word= word.get('german_word'),
+                english_word= word.get('english_word'),
+                russian_word= word.get('russian_word'),
+                amount_already_know= 0,
+                amount_back_to_learning= 0,
+                lang_level_id= DataPreparation.TEST_LEVEL_ID,
+                word_type_id= DataPreparation.TEST_WORD_TYPE_ID,
+                group_id= DataPreparation.TEST_GROUP_ID
+            )
 
-        # Prepare data
-        word = DataPreparation.TEST_WORD
-        tested_word = WordAddDTO(
-            user_id= DataPreparation.TEST_USER_ID,
-            german_word= word.get('german_word'),
-            english_word= word.get('english_word'),
-            russian_word= word.get('russian_word'),
-            amount_already_know= 0,
-            amount_back_to_learning= 0,
-            lang_level_id= DataPreparation.TEST_LEVEL_ID,
-            word_type_id= DataPreparation.TEST_WORD_TYPE_ID,
-            group_id= DataPreparation.TEST_GROUP_ID
-        )
+            # Do tests
+            WordService.add_new_word_from_dto(tested_word)
 
-        # Do tests
-        WordService.add_new_word_from_dto(tested_word)
+            # Check results
+            with session_factory() as session:
+                query = select(Word)
+                result = session.execute(query)
+                res_word = result.scalars().all()
+                tested_word = res_word[0]
 
-        # Check results
-        with session_factory() as session:
-            query = select(Word)
-            result = session.execute(query)
-            res_word = result.scalars().all()
-            tested_word = res_word[0]
-
-            assert len(res_word) == 1
-            assert tested_word.user_id == DataPreparation.TEST_USER_ID
-            assert tested_word.word_type_id == DataPreparation.TEST_WORD_TYPE_ID
-            assert tested_word.group_id == DataPreparation.TEST_GROUP_ID
-            assert tested_word.amount_back_to_learning == 0
-            assert tested_word.amount_already_know == 0
-            assert tested_word.german_word == word.get('german_word')
-            assert tested_word.russian_word == word.get('russian_word')
-            assert tested_word.english_word == word.get('english_word')
+                assert len(res_word) == 1
+                assert tested_word.user_id == DataPreparation.TEST_USER_ID
+                assert tested_word.word_type_id == DataPreparation.TEST_WORD_TYPE_ID
+                assert tested_word.group_id == DataPreparation.TEST_GROUP_ID
+                assert tested_word.amount_back_to_learning == 0
+                assert tested_word.amount_already_know == 0
+                assert tested_word.german_word == word.get('german_word')
+                assert tested_word.russian_word == word.get('russian_word')
+                assert tested_word.english_word == word.get('english_word')
 
     def test_add_new_word(self, create_test_user, create_test_level, create_test_group, create_test_word_type):
         """
         Positive Test for method add_word
         """
-        # Prepare data
-        word = DataPreparation.TEST_WORD
+        with patch('src.dwh.dwh_service.DwhService.send') as mock:
+            # Prepare data
+            word = DataPreparation.TEST_WORD
 
-        # Do tests
-        WordService.add_new_word(DataPreparation.TEST_USER_NAME, word.get('german_word'), word.get('english_word'),
-                                 word.get('russian_word'), 0, 0,
-                                 group_word_name=DataPreparation.TEST_GROUP_NAME, level=LevelEnum.a1,
-                                 word_type=DataPreparation.TEST_WORD_TYPE)
+            # Do tests
+            WordService.add_new_word(DataPreparation.TEST_USER_NAME, word.get('german_word'), word.get('english_word'),
+                                     word.get('russian_word'), 0, 0,
+                                     group_word_name=DataPreparation.TEST_GROUP_NAME, level=LevelEnum.a1,
+                                     word_type=DataPreparation.TEST_WORD_TYPE)
 
-        # Check results
-        with session_factory() as session:
-            query = select(Word)
-            result = session.execute(query)
-            res_word = result.scalars().all()
-            tested_word = res_word[0]
+            # Check results
+            with session_factory() as session:
+                query = select(Word)
+                result = session.execute(query)
+                res_word = result.scalars().all()
+                tested_word = res_word[0]
 
-            assert len(res_word) == 1
-            assert tested_word.user_id == DataPreparation.TEST_USER_ID
-            assert tested_word.word_type_id == DataPreparation.TEST_WORD_TYPE_ID
-            assert tested_word.group_id == DataPreparation.TEST_GROUP_ID
-            assert tested_word.amount_back_to_learning == 0
-            assert tested_word.amount_already_know == 0
-            assert tested_word.german_word == word.get('german_word')
-            assert tested_word.russian_word == word.get('russian_word')
-            assert tested_word.english_word == word.get('english_word')
+                assert len(res_word) == 1
+                assert tested_word.user_id == DataPreparation.TEST_USER_ID
+                assert tested_word.word_type_id == DataPreparation.TEST_WORD_TYPE_ID
+                assert tested_word.group_id == DataPreparation.TEST_GROUP_ID
+                assert tested_word.amount_back_to_learning == 0
+                assert tested_word.amount_already_know == 0
+                assert tested_word.german_word == word.get('german_word')
+                assert tested_word.russian_word == word.get('russian_word')
+                assert tested_word.english_word == word.get('english_word')
