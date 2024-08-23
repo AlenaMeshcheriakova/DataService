@@ -3,20 +3,19 @@ syntax = "proto3";
 package user_service;
 
 import "google/protobuf/empty.proto";
-import "google/protobuf/wrappers.proto";
 import "google/protobuf/timestamp.proto";
 
 
 message UserRequest {
   string name = 1;
-  string email = 2;
+  int32 training_length = 2;
   string password = 3;
-  string telegram_id = 4;
-  int32 training_length = 5;
+  string email = 4;
+  string telegram_user_id = 5;
 }
 
 message UserIdRequest {
-  string request_id = 1;  // This will be a UUID string
+  string request_id = 1;  // UUID
 }
 
 message UserNameRequest {
@@ -29,36 +28,28 @@ message UserTrainingLengthRequest {
 }
 
 message UserCreateTelegramDTORequest {
-  string id = 1;  // UUID is represented as a string
+  string id = 1;  // UUID
   string user_name = 2;
   int32 training_length = 3;
-  string telegram_user_id = 4;
-  string hashed_password = 5;
-  string email = 6;
+  string password = 4;
+  string email = 5;
+  string telegram_user_id = 6;
 }
 
-// Response message containing a boolean value.
 message CheckResponse {
   bool result = 1;
 }
 
 message UserIdResponse {
-  string user_id = 1;  // This will be a UUID string
+  string user_id = 1;  // UUID
 }
 
 message UserCreateFullDTOResponse {
-    string id = 1; // This will be a UUID string
+    string id = 1; // UUID
     string user_name = 2;
-    string telegram_user_id = 3;
-    int32 training_length = 4;
-    google.protobuf.Timestamp created_at = 5;
-    google.protobuf.Timestamp updated_at = 6;
-    string password = 7;
-    string hashed_password = 8;
-    string email = 9;
-    bool is_active = 10;
-    bool is_superuser = 11;
-    bool is_verified = 12;
+    int32 training_length = 3;
+    google.protobuf.Timestamp created_at = 4;
+    google.protobuf.Timestamp updated_at = 5;
 }
 
 

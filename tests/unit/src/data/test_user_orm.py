@@ -18,9 +18,7 @@ class TestUserOrm:
         test_user_name = UserOrm.find_user_by_name(DataPreparation.TEST_USER_NAME)
 
         assert test_user_name.id == DataPreparation.TEST_USER_ID
-        assert test_user_name.telegram_user_id == str(DataPreparation.TEST_TELEGRAM_USER_ID)
         assert test_user_name.user_name == DataPreparation.TEST_USER_NAME
-        assert test_user_name.email == DataPreparation.TEST_USER_EMAIL
 
     def test_find_user_by_id(self, create_test_user):
         """
@@ -30,9 +28,7 @@ class TestUserOrm:
         test_user_name = UserOrm.find_user_by_id(DataPreparation.TEST_USER_ID)
 
         assert test_user_name.id == DataPreparation.TEST_USER_ID
-        assert test_user_name.telegram_user_id == str(DataPreparation.TEST_TELEGRAM_USER_ID)
         assert test_user_name.user_name == DataPreparation.TEST_USER_NAME
-        assert test_user_name.email == DataPreparation.TEST_USER_EMAIL
 
     def test_create_user(self):
         """
@@ -41,12 +37,9 @@ class TestUserOrm:
         # Prepare data
         test_user = UserCreateTelegramDTO(
             id=DataPreparation.TEST_USER_ID,
+            auth_user_id=DataPreparation.TEST_USER_AUTH_ID,
             user_name=DataPreparation.TEST_USER_NAME,
-            telegram_user_id=DataPreparation.TEST_TELEGRAM_USER_ID,
-            training_length=5,
-            hashed_password=DataPreparation.TEST_PASS,
-            email=DataPreparation.TEST_USER_EMAIL,
-            is_active=True
+            training_length=5
         )
 
         # Do tests
@@ -61,6 +54,4 @@ class TestUserOrm:
 
             assert len(res_user) == 1
             assert tested_user.id == DataPreparation.TEST_USER_ID
-            assert tested_user.telegram_user_id == str(DataPreparation.TEST_TELEGRAM_USER_ID)
             assert tested_user.user_name == DataPreparation.TEST_USER_NAME
-            assert tested_user.email == DataPreparation.TEST_USER_EMAIL

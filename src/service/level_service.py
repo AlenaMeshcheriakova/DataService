@@ -1,7 +1,10 @@
+import uuid
 from typing import List
 from uuid import UUID
 
-from src.dto.schema import LevelDTO
+from action_dwh_enum import ActionDWHEnum
+from src.dto.schema import LevelDTO, convert_full_level_dto_to_level_dto, LevelAddDTO
+from src.dwh.dwh_service import DwhService
 from src.log.logger import log_decorator, CustomLogger
 from src.model.level_enum import LevelEnum
 from src.data.level_orm import LevelOrm
@@ -15,7 +18,22 @@ class LevelService:
         Create all standard levels (from LevelEnum) in DB.
         @return: None
         """
-        LevelOrm.insert_all_levels()
+        added_levels = LevelOrm.insert_all_levels()
+        for added_level in added_levels:
+            DwhService.send('Level',
+                            added_level,
+                            ActionDWHEnum.CREATED,
+                            "New level was added")
+
+    @staticmethod
+    @log_decorator(my_logger=CustomLogger())
+    def create_level(level_name: str) -> None:
+        new_level = LevelAddDTO(
+            id=uuid.uuid4(),
+            lang_level=level_name
+        )
+        LevelOrm.create_level(new_level)
+        return None
 
     @staticmethod
     @log_decorator(my_logger=CustomLogger())
@@ -38,3 +56,29 @@ class LevelService:
         level_id = LevelOrm.get_level_id_by_name(level_enum)
         return level_id
 
+    @staticmethod
+    @log_decorator(my_logger=CustomLogger())
+    def get_level_by_id(level_id: uuid.UUID) -> LevelDTO:
+        level = LevelOrm.get_level_by_id(level_id)
+        if level is None:
+            raise ValueError(f"Level with ID {level_id} not found")
+        level_res: LevelDTO = convert_full_level_dto_to_level_dto(level)
+        return level_res
+
+    @staticmethod
+    @log_decorator(my_logger=CustomLogger())
+    def update_level(level_id: uuid.UUID, new_level_name: str) -> None:
+        level_to_update = LevelOrm.get_level_by_id(level_id)
+        if level_to_update is None:
+            raise ValueError(f"Level with ID {level_id} wasn't found")
+        LevelOrm.update_level(level_id, new_level_name)
+        DwhService.send('Level', level_to_update, ActionDWHEnum.UPDATED, f"Level was updated to new lang name {new_level_name}")
+
+    @staticmethod
+    @log_decorator(my_logger=CustomLogger())
+    def delete_level(level_id: uuid.UUID) -> None:
+        level_to_delete = LevelOrm.get_level_by_id(level_id)
+        if level_to_delete is None:
+            raise ValueError(f"Level with ID {level_id} wasn't found")
+        LevelOrm.delete_level(level_id)
+        DwhService.send('Level', level_to_delete, ActionDWHEnum.DELETED, "Level was deleted")

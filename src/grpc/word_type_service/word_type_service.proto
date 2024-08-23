@@ -1,0 +1,43 @@
+syntax = "proto3";
+
+package word_type_service;
+import "google/protobuf/empty.proto";
+
+enum WordTypeEnum {
+    BASIC = 0;
+    STANDARD = 1;
+    CUSTOM = 2;
+    TEST_WORD_TYPE = 3;
+}
+
+message CreateWordTypeRequest {
+    string word_type = 1;
+}
+
+message CreateWordTypeResponse {
+    string word_type_id = 1;
+}
+
+message GetWordTypeIdRequest {
+    string word_type = 1;
+}
+
+message GetWordTypeIdResponse {
+    string word_type_id = 1;
+}
+
+message UpdateWordTypeRequest {
+    string word_type_id = 1;
+    string new_word_type = 2;
+}
+
+message DeleteWordTypeRequest {
+    string word_type_id = 1;
+}
+
+service WordTypeService {
+    rpc create_word_type(CreateWordTypeRequest) returns (CreateWordTypeResponse);
+    rpc get_word_type_id(GetWordTypeIdRequest) returns (GetWordTypeIdResponse);
+    rpc update_word_type(UpdateWordTypeRequest) returns (google.protobuf.Empty);
+    rpc delete_word_type(DeleteWordTypeRequest) returns (google.protobuf.Empty);
+}

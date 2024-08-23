@@ -19,7 +19,9 @@ from src.model.word import Word
 # --------------------TEST CONSTANT--------------------
 class DataPreparation:
 
+    # User
     TEST_USER_ID = uuid.uuid4()
+    TEST_USER_AUTH_ID = uuid.uuid4()
     TEST_USER_NAME = 'TEST_USER_NAME'
     TEST_USER_EMAIL = 'TEST_USER_EMAIL@gmail.com'
     TEST_PASS = 'TEST_PASS'
@@ -33,7 +35,7 @@ class DataPreparation:
     TEST_COMMON_GROUP_ID = uuid.uuid4()
 
     # Level
-    TEST_LEVEL_NAME = LevelEnum.a1
+    TEST_LEVEL_NAME = LevelEnum.a1.a1
     TEST_LEVEL_ID = uuid.uuid4()
 
     # Word type
@@ -116,14 +118,12 @@ def create_test_user():
     """Create Test User in the beginning of  tests
     """
     with session_factory() as session:
+
         new_user = UserDB(
-            id = DataPreparation.TEST_USER_ID,
-            user_name= DataPreparation.TEST_USER_NAME,
-            training_length=10,
-            email= DataPreparation.TEST_USER_EMAIL,
-            hashed_password= DataPreparation.TEST_PASS,
-            is_active=True,
-            telegram_user_id= DataPreparation.TEST_TELEGRAM_USER_ID
+            id=DataPreparation.TEST_USER_ID,
+            user_name=DataPreparation.TEST_USER_NAME,
+            auth_user_id=DataPreparation.TEST_USER_AUTH_ID,
+            training_length=10
         )
         session.add(new_user)
         session.commit()

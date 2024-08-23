@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 from uuid import UUID
 
 from sqlalchemy import insert, select, update, desc
@@ -166,7 +166,7 @@ class WordOrm(BaseOrm):
 
     @staticmethod
     @log_decorator(my_logger=CustomLogger())
-    def add_word(new_word: WordDTO) -> None:
+    def add_word(new_word: WordDTO) -> Optional[Word]:
         """
         Add new word to database
         @param new_word: new word
@@ -175,9 +175,15 @@ class WordOrm(BaseOrm):
         if (new_word is None):
             raise ValueError(f"Word is None: {new_word}, expected WordDTO")
         with session_factory() as session:
-            stmt = insert(Word).values(**new_word.dict())
-            session.execute(stmt)
+            stmt = insert(Word).values(**new_word.dict()).returning(Word)
+            result = session.execute(stmt)
             session.commit()
+
+            created_word = result.fetchone()
+            if created_word:
+                return created_word[0]
+            else:
+                raise RuntimeError("Failed to retrieve created word")
         return None
 
 

@@ -18,6 +18,11 @@ class Settings(BaseSettings):
     GRPC_HOST: str
     GRPC_PORT: int
 
+    GRPC_AUTH_HOST: str
+    GRPC_AUTH_PORT: int
+
+    MQ_HOST: str
+
     @property
     def get_DB_HOST(self)-> str:
         return self.DB_HOST
@@ -47,6 +52,10 @@ class Settings(BaseSettings):
         return f"postgresql+psycopg2://{self.DB_USER}:{self.DB_PASS}@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
 
     @property
+    def get_MQ_HOST(self) -> str:
+        return self.MQ_HOST
+
+    @property
     def get_REDIS_HOST(self)-> str:
         return self.REDIS_HOST
 
@@ -58,7 +67,12 @@ class Settings(BaseSettings):
     def get_REDIS_DECODE_RESPONSES(self) -> bool:
         return self.REDIS_DECODE_RESPONSES
 
-    model_config = SettingsConfigDict(env_file="../.env")
+    @property
+    def get_AUTH_GRPC_conn(self) -> str:
+        return f"{self.GRPC_AUTH_HOST}:{str(self.GRPC_AUTH_PORT)}"
+
+
+    model_config = SettingsConfigDict(env_file="cfg/development/.env")
 
 load_dotenv()
 settings = Settings()

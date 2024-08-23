@@ -1,7 +1,10 @@
 import uuid
 
-from src.dto.schema import UserCreateFullDTO, UserCreateTelegramDTO
+from action_dwh_enum import ActionDWHEnum
+from src.dto.schema import UserCreateFullDTO, UserCreateTelegramDTO, RegisterRequest, UserAuthTelegramDTO
 from src.data.user_orm import UserOrm
+from src.dwh.dwh_service import DwhService
+from src.grpc.auth_service.auth_service import AuthService
 from src.log.logger import log_decorator, CustomLogger
 
 class UserService:
@@ -46,7 +49,8 @@ class UserService:
         @param user_name: user_name
         @return: None
         """
-        UserOrm.update_training_length(user_name, new_training_length)
+        updated_user = UserOrm.update_training_length(user_name, new_training_length)
+        DwhService.send('User', updated_user, ActionDWHEnum.UPDATED, "Training length was updated for user")
 
     @staticmethod
     @log_decorator(my_logger=CustomLogger())
@@ -64,32 +68,58 @@ class UserService:
 
     @staticmethod
     @log_decorator(my_logger=CustomLogger())
-    def create_user_by_DTO(new_user: UserCreateTelegramDTO) -> None:
+    def create_user_by_DTO(new_user: UserAuthTelegramDTO) -> None:
         """
         Create user by DTO
         @param new_user: UserCreateTelegramDTO
         @return: None
         """
-        UserOrm.create_user(new_user)
+        # Create AUTH user
+        registration_data = RegisterRequest(
+            username=new_user.user_name,
+            password=new_user.password,
+            email=new_user.email,
+            telegram_user_id=new_user.telegram_user_id
+        )
+        res = AuthService.register(registration_data)
+        if not res.message:
+            raise ValueError(
+                f"User with name: {new_user.user_name}, email: {new_user.email} "
+                f"and telegram_user_id: {new_user.telegram_user_id} was not created")
+
+        # Create DATA user
+        new_data_user = UserCreateTelegramDTO(
+            id=new_user.id,
+            auth_user_id=new_user.auth_user_id,
+            user_name=new_user.user_name,
+            training_length=new_user.training_length
+        )
+        created_user = UserOrm.create_user(new_data_user)
+        DwhService.send('User', created_user, ActionDWHEnum.UPDATED, "Create new user")
 
     @staticmethod
     @log_decorator(my_logger=CustomLogger())
-    def create_user(name: str, email: str, password: str, telegram_id: str, training_length: int = 10) -> None:
+    def create_user(name: str, password: str, email: str, telegram_user_id: str, training_length: int = 10) -> None:
         """
         Create user
         @param name: users name
-        @param email: users email
-        @param password: users password
-        @param telegram_id: users telegram_id
         @param training_length: users training_length (By default 10)
         @return: None
         """
+        # Create AUTH user
+        registration_data = RegisterRequest(
+            username=name,
+            password=password,
+            email=email,
+            telegram_user_id=telegram_user_id
+        )
+        res = AuthService.register(registration_data)
+
+        # Create DATA user
         new_user = UserCreateTelegramDTO(
             id=uuid.uuid4(),
             user_name=name,
-            training_length=training_length,
-            telegram_user_id=str(telegram_id),
-            hashed_password=str(password),
-            email=email
+            training_length=training_length
         )
-        UserOrm.create_user(new_user)
+        createdUser = UserOrm.create_user(new_user)
+        DwhService.send('User', createdUser, ActionDWHEnum.UPDATED, "Create new user")
