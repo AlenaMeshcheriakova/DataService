@@ -1,6 +1,6 @@
 import uuid
 
-from action_dwh_enum import ActionDWHEnum
+from src.model.action_dwh_enum import ActionDWHEnum
 from src.dto.schema import UserCreateFullDTO, UserCreateTelegramDTO, RegisterRequest, UserAuthTelegramDTO
 from src.data.user_orm import UserOrm
 from src.dwh.dwh_service import DwhService

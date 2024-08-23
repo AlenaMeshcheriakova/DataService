@@ -4,7 +4,7 @@ from src.data.user_orm import UserOrm
 from src.db.database import session_factory
 from src.dto.schema import UserCreateTelegramDTO
 from tests.unit.test_data_preparation import (DataPreparation, create_test_user)
-from userdb import UserDB
+from src.model.userdb import UserDB
 
 
 class TestUserOrm:

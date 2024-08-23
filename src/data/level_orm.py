@@ -26,7 +26,7 @@ class LevelOrm(BaseOrm):
         created_levels = list()
         with session_factory() as session:
             for level in LevelEnum:
-                new_level = LevelAddDTO(lang_level=level, id=uuid.uuid4())
+                new_level = LevelAddDTO(lang_level=level.value, id=uuid.uuid4())
                 stmt = insert(Level).values(**new_level.dict()).returning(Level)
                 result = session.execute(stmt)
                 created_level = result.fetchone()
@@ -70,14 +70,14 @@ class LevelOrm(BaseOrm):
 
     @staticmethod
     @log_decorator(my_logger=CustomLogger())
-    def get_level_id_by_name(enum_example: str) -> uuid.UUID:
+    def get_level_id_by_name(level_name: str) -> uuid.UUID:
         """
         Get Level id by level name
-        @param enum_example: value in str
+        @param level_name: str
         @return: level id (UUID)
         """
         with session_factory() as session:
-            query = select(Level).filter_by(lang_level=enum_example)
+            query = select(Level).filter_by(lang_level=level_name)
             result = session.execute(query)
             level = result.scalars().first()
             return level.id

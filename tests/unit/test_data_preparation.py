@@ -35,12 +35,12 @@ class DataPreparation:
     TEST_COMMON_GROUP_ID = uuid.uuid4()
 
     # Level
-    TEST_LEVEL_NAME = LevelEnum.a1.a1
+    TEST_LEVEL_NAME = LevelEnum.a1.value
     TEST_LEVEL_ID = uuid.uuid4()
 
     # Word type
-    TEST_WORD_TYPE = WordTypeEnum.test
-    TEST_CUSTOM_WORD_TYPE = WordTypeEnum.custom
+    TEST_WORD_TYPE = WordTypeEnum.test.value
+    TEST_CUSTOM_WORD_TYPE = WordTypeEnum.custom.value
     TEST_WORD_TYPE_ID = uuid.uuid4()
     TEST_CUSTOM_WORD_TYPE_ID = uuid.uuid4()
 
@@ -118,7 +118,6 @@ def create_test_user():
     """Create Test User in the beginning of  tests
     """
     with session_factory() as session:
-
         new_user = UserDB(
             id=DataPreparation.TEST_USER_ID,
             user_name=DataPreparation.TEST_USER_NAME,
@@ -133,7 +132,7 @@ def create_all_levels_for_test():
     """Create levels by LevelEnum for tests """
     with session_factory() as session:
         for level in LevelEnum:
-            new_level = LevelAddDTO(lang_level=level, id=uuid.uuid4())
+            new_level = LevelAddDTO(lang_level=level.value, id=uuid.uuid4())
             stmt = insert(Level).values(**new_level.dict())
             session.execute(stmt)
         session.commit()

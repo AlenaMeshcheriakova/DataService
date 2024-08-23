@@ -2,7 +2,7 @@ import uuid
 from typing import List
 from uuid import UUID
 
-from action_dwh_enum import ActionDWHEnum
+from src.model.action_dwh_enum import ActionDWHEnum
 from src.dto.schema import LevelDTO, convert_full_level_dto_to_level_dto, LevelAddDTO
 from src.dwh.dwh_service import DwhService
 from src.log.logger import log_decorator, CustomLogger
@@ -47,10 +47,10 @@ class LevelService:
 
     @staticmethod
     @log_decorator(my_logger=CustomLogger())
-    def get_level_id_by_name(level_enum: LevelEnum) -> UUID:
+    def get_level_id_by_name(level_enum: str) -> UUID:
         """
         Get Level id by level name(from LevelEnum)
-        @param level_enum: value in LevelEnum
+        @param level_enum: str
         @return: level_id (UUID)
         """
         level_id = LevelOrm.get_level_id_by_name(level_enum)

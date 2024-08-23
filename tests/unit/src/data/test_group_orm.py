@@ -1,4 +1,5 @@
 import uuid
+from unittest.mock import patch
 
 import pytest
 from sqlalchemy import select
@@ -88,16 +89,17 @@ class TestGroupOrm:
         """
         Check ability to get group id by name in GroupOrm
         """
-        # Prepare data
-        WordService.add_new_word(DataPreparation.TEST_USER_NAME, "GERMAN_WORD", "ENGLISH_WORD",
-                               "RUSSIAN_WORD", 0, 0,
-                                 group_word_name =DataPreparation.TEST_GROUP_NAME, level = LevelEnum.a1,
-                                 word_type=DataPreparation.TEST_WORD_TYPE)
+        with patch('src.dwh.dwh_service.DwhService.send') as mock:
+            # Prepare data
+            WordService.add_new_word(DataPreparation.TEST_USER_NAME, "GERMAN_WORD", "ENGLISH_WORD",
+                                   "RUSSIAN_WORD", 0, 0,
+                                     group_word_name=DataPreparation.TEST_GROUP_NAME, level=LevelEnum.a1.value,
+                                     word_type=DataPreparation.TEST_WORD_TYPE)
 
-        # Do tests
-        result = GroupOrm.get_list_groups_name_by_user(DataPreparation.TEST_USER_NAME)
+            # Do tests
+            result = GroupOrm.get_list_groups_name_by_user(DataPreparation.TEST_USER_NAME)
 
-        # Check results
-        assert len(result) == 2
-        for group_name in result:
-            assert group_name in [DataPreparation.TEST_GROUP_NAME, DataPreparation.TEST_COMMON_GROUP_NAME]
+            # Check results
+            assert len(result) == 2
+            for group_name in result:
+                assert group_name in [DataPreparation.TEST_GROUP_NAME, DataPreparation.TEST_COMMON_GROUP_NAME]

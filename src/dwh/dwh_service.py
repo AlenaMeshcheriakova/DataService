@@ -3,8 +3,8 @@ from typing import Any
 import pika
 import json
 
-from UUIDEncoder import UUIDEncoder
-from action_dwh_enum import ActionDWHEnum
+from src.model.UUIDEncoder import UUIDEncoder
+from src.model.action_dwh_enum import ActionDWHEnum
 from cfg.сonfig import settings
 from src.dwh.dwh_message import DwhMessage
 
