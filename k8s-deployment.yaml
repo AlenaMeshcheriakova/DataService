@@ -1,0 +1,105 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: data-service-deployment
+  labels:
+    app: data-service-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: data-service-app
+  template:
+    metadata:
+      labels:
+        app: data-service-app
+    spec:
+      containers:
+      - name: data-service-container
+        image: europe-central2-docker.pkg.dev/telegrambot-433510/telegram-docker-repo/data-service-image:latest
+        ports:
+        - containerPort: 50052
+        env:
+        - name: MODE
+          valueFrom:
+            secretKeyRef:
+              name: data-secrets
+              key: MODE
+        - name: DB_HOST
+          valueFrom:
+            secretKeyRef:
+              name: data-secrets
+              key: DB_HOST
+        - name: DB_PORT
+          valueFrom:
+            secretKeyRef:
+              name: data-secrets
+              key: DB_PORT
+        - name: DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: data-secrets
+              key: DB_USER
+        - name: DB_PASS
+          valueFrom:
+            secretKeyRef:
+              name: data-secrets
+              key: DB_PASS
+        - name: DB_NAME
+          valueFrom:
+            secretKeyRef:
+              name: data-secrets
+              key: DB_NAME
+        - name: REDIS_HOST
+          valueFrom:
+            secretKeyRef:
+              name: data-redis-secrets
+              key: REDIS_HOST
+        - name: REDIS_PORT
+          valueFrom:
+            secretKeyRef:
+              name: data-redis-secrets
+              key: REDIS_PORT
+        - name: REDIS_DECODE_RESPONSES
+          valueFrom:
+            secretKeyRef:
+              name: data-redis-secrets
+              key: REDIS_DECODE_RESPONSES
+        - name: GRPC_HOST
+          valueFrom:
+            secretKeyRef:
+              name: data-grpc-secrets
+              key: GRPC_HOST
+        - name: GRPC_PORT
+          valueFrom:
+            secretKeyRef:
+              name: data-grpc-secrets
+              key: GRPC_PORT
+        - name: GRPC_AUTH_HOST
+          valueFrom:
+            secretKeyRef:
+              name: data-grpc-secrets
+              key: GRPC_AUTH_HOST
+        - name: GRPC_AUTH_PORT
+          valueFrom:
+            secretKeyRef:
+              name: data-grpc-secrets
+              key: GRPC_AUTH_PORT
+        - name: MQ_HOST
+          valueFrom:
+            secretKeyRef:
+              name: data-grpc-secrets
+              key: MQ_HOST
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: data-service
+spec:
+  selector:
+    app: data-service-app
+  ports:
+    - protocol: TCP
+      port: 50052
+      targetPort: 50052
+  type: ClusterIP
