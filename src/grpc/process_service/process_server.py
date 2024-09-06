@@ -6,7 +6,7 @@ from src.grpc.process_service import process_service_pb2
 from src.grpc.process_service.process_service_pb2_grpc import ProcessServiceServicer
 from src.grpc.user_service import user_service_pb2
 from src.grpc.word_service import word_service_pb2
-from src.log.logger import CustomLogger, log_decorator
+from src.log.logger import logger, log_decorator
 from src.service.process_service import ProcessService
 from user_action_enum import UserActionEnum
 from word_type_enum import WordTypeEnum
@@ -14,7 +14,7 @@ from word_type_enum import WordTypeEnum
 
 class ProcessServiceServicer(ProcessServiceServicer):
 
-    @log_decorator(my_logger=CustomLogger())
+    @log_decorator(my_logger=logger)
     def start_learning_process(self, request, context):
         # Get data from request
         user_name = request.user_name
@@ -28,7 +28,7 @@ class ProcessServiceServicer(ProcessServiceServicer):
         return resulted_learning_set
 
 
-    @log_decorator(my_logger=CustomLogger())
+    @log_decorator(my_logger=logger)
     def get_learning_set(self, request, context):
         # Get data from request
         user_name = request.user_name
@@ -41,7 +41,7 @@ class ProcessServiceServicer(ProcessServiceServicer):
         resulted_learning_set = learning_set_to_protobuf(learning_set)
         return resulted_learning_set
 
-    @log_decorator(my_logger=CustomLogger())
+    @log_decorator(my_logger=logger)
     def update_learning_progress(self, request, context):
         # Get data from request
         user_id = request.user_id
@@ -56,7 +56,7 @@ class ProcessServiceServicer(ProcessServiceServicer):
         # Return Empty
         return empty_pb2.Empty()
 
-    @log_decorator(my_logger=CustomLogger())
+    @log_decorator(my_logger=logger)
     def add_learning_set_to_cash(self, request, context):
         # Get learning_set from request
         learning_set = learning_set_from_protobuf(request)

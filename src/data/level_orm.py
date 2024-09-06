@@ -4,7 +4,7 @@ import logging
 
 from sqlalchemy import insert, select, update, delete
 from src.data.orm_const import QUERY_AMOUNT_LIMIT
-from src.log.logger import log_decorator, CustomLogger
+from src.log.logger import log_decorator, logger
 from src.model.level import Level, LevelEnum
 from src.db.database import session_factory
 from src.dto.schema import LevelAddDTO, LevelDTO, LevelFullDTO
@@ -16,7 +16,7 @@ class LevelOrm(BaseOrm):
     LevelOrm class for object Level which allowed work with Level in database
     """
     @staticmethod
-    @log_decorator(my_logger=CustomLogger())
+    @log_decorator(my_logger=logger)
     def insert_all_levels() -> List[Dict]:
         """
         Create all necessary level in DB.
@@ -35,7 +35,7 @@ class LevelOrm(BaseOrm):
             session.commit()
         return created_levels
 
-    @log_decorator(my_logger=CustomLogger())
+    @log_decorator(my_logger=logger)
     def create_level(level: LevelAddDTO) -> None:
         """
         Insert a single level into the DB
@@ -48,7 +48,7 @@ class LevelOrm(BaseOrm):
             session.commit()
 
     @staticmethod
-    @log_decorator(my_logger=CustomLogger())
+    @log_decorator(my_logger=logger)
     def get_all_levels() -> List[LevelDTO]:
         """
         Get List of existed levels
@@ -69,7 +69,7 @@ class LevelOrm(BaseOrm):
             return levels
 
     @staticmethod
-    @log_decorator(my_logger=CustomLogger())
+    @log_decorator(my_logger=logger)
     def get_level_id_by_name(level_name: str) -> uuid.UUID:
         """
         Get Level id by level name
@@ -83,7 +83,7 @@ class LevelOrm(BaseOrm):
             return level.id
 
     @staticmethod
-    @log_decorator(my_logger=CustomLogger())
+    @log_decorator(my_logger=logger)
     def get_level_by_id(level_id: uuid.UUID) -> Union[LevelFullDTO, None]:
         """
         Get a level by ID.
@@ -104,7 +104,7 @@ class LevelOrm(BaseOrm):
             return None
 
     @staticmethod
-    @log_decorator(my_logger=CustomLogger())
+    @log_decorator(my_logger=logger)
     def update_level(level_id: uuid.UUID, new_level_name: str) -> None:
         """
         Update a level in the database.
@@ -118,7 +118,7 @@ class LevelOrm(BaseOrm):
             session.commit()
 
     @staticmethod
-    @log_decorator(my_logger=CustomLogger())
+    @log_decorator(my_logger=logger)
     def delete_level(level_id: uuid.UUID) -> None:
         """
         Delete a level from the database by ID.

@@ -6,7 +6,7 @@ from sqlalchemy.sql.functions import count
 
 from src.db.database import session_factory
 from src.dto.schema import WordAddDTO, WordDTO, WordGetDTO
-from src.log.logger import log_decorator, CustomLogger
+from src.log.logger import log_decorator, logger
 from src.model.word import Word
 from src.data.base_orm import BaseOrm
 from src.model.word_type import WordType
@@ -17,7 +17,7 @@ from src.model.standard_word_user import StandardWordUser
 class WordOrm(BaseOrm):
 
     @staticmethod
-    @log_decorator(my_logger=CustomLogger())
+    @log_decorator(my_logger=logger)
     def find_words_by_user_id(user_id: UUID, training_length: int = 10,
                               word_type: str = WordTypeEnum.custom.value) -> List[WordDTO]:
         """
@@ -49,7 +49,7 @@ class WordOrm(BaseOrm):
             return lines
 
     @staticmethod
-    @log_decorator(my_logger=CustomLogger())
+    @log_decorator(my_logger=logger)
     def words_amount_in_standard_word_user(user_id: UUID) -> int:
         """
         Get amount of standard word which was trained at least once for user with user_id
@@ -64,7 +64,7 @@ class WordOrm(BaseOrm):
             return int(res)
 
     @staticmethod
-    @log_decorator(my_logger=CustomLogger())
+    @log_decorator(my_logger=logger)
     def find_words_for_standard_type(user_id: UUID, training_length: int = 10,
                               word_type: str = WordTypeEnum.standard.value) -> List[WordDTO]:
         """
@@ -106,7 +106,7 @@ class WordOrm(BaseOrm):
             return lines
 
     @staticmethod
-    @log_decorator(my_logger=CustomLogger())
+    @log_decorator(my_logger=logger)
     def find_new_words_for_standard_type(training_length: int = 10) -> List[WordDTO]:
         """
         GET INFORMATION FROM TABLE WORD
@@ -148,7 +148,7 @@ class WordOrm(BaseOrm):
             return lines
 
     @staticmethod
-    @log_decorator(my_logger=CustomLogger())
+    @log_decorator(my_logger=logger)
     def find_word_by_id(word_id: UUID) -> WordAddDTO:
         """
         Get word model by word_id
@@ -165,7 +165,7 @@ class WordOrm(BaseOrm):
             return word
 
     @staticmethod
-    @log_decorator(my_logger=CustomLogger())
+    @log_decorator(my_logger=logger)
     def add_word(new_word: WordDTO) -> Optional[Word]:
         """
         Add new word to database
@@ -188,7 +188,7 @@ class WordOrm(BaseOrm):
 
 
     @staticmethod
-    @log_decorator(my_logger=CustomLogger())
+    @log_decorator(my_logger=logger)
     def update_counter_for_word(german_word: str, user_id: UUID, inc_amount_already_know, inc_amount_back_to_learning) -> None:
         """
         Update parameters in existed words

@@ -5,11 +5,11 @@ from src.dto.schema import UserCreateFullDTO, UserCreateTelegramDTO, RegisterReq
 from src.data.user_orm import UserOrm
 from src.dwh.dwh_service import DwhService
 from src.grpc.auth_service.auth_service import AuthService
-from src.log.logger import log_decorator, CustomLogger
+from src.log.logger import log_decorator, logger
 
 class UserService:
     @staticmethod
-    @log_decorator(my_logger=CustomLogger())
+    @log_decorator(my_logger=logger)
     def get_user_by_id(user_id: uuid.UUID) -> UserCreateFullDTO:
         """
         Get User object from UserOrm by user_id
@@ -20,7 +20,7 @@ class UserService:
         return raw_user
 
     @staticmethod
-    @log_decorator(my_logger=CustomLogger())
+    @log_decorator(my_logger=logger)
     def get_user_by_name(user_name: str) -> UserCreateFullDTO:
         """
         Get User object from UserOrm by user_name
@@ -31,7 +31,7 @@ class UserService:
         return raw_user
 
     @staticmethod
-    @log_decorator(my_logger=CustomLogger())
+    @log_decorator(my_logger=logger)
     def get_user_id_by_name(user_name: str) -> uuid.UUID:
         """
         Get User by name and return its id
@@ -42,7 +42,7 @@ class UserService:
         return user_id
 
     @staticmethod
-    @log_decorator(my_logger=CustomLogger())
+    @log_decorator(my_logger=logger)
     def update_user_training_length(user_name: str, new_training_length: int) -> None:
         """
         Update training length for User by user_name
@@ -53,7 +53,7 @@ class UserService:
         DwhService.send('User', updated_user, ActionDWHEnum.UPDATED, "Training length was updated for user")
 
     @staticmethod
-    @log_decorator(my_logger=CustomLogger())
+    @log_decorator(my_logger=logger)
     def is_user_created(user_name: str) -> bool:
         """
         Check is User with user_name was created.
@@ -67,7 +67,7 @@ class UserService:
             return True
 
     @staticmethod
-    @log_decorator(my_logger=CustomLogger())
+    @log_decorator(my_logger=logger)
     def create_user_by_DTO(new_user: UserAuthTelegramDTO) -> None:
         """
         Create user by DTO
@@ -98,7 +98,7 @@ class UserService:
         DwhService.send('User', created_user, ActionDWHEnum.UPDATED, "Create new user")
 
     @staticmethod
-    @log_decorator(my_logger=CustomLogger())
+    @log_decorator(my_logger=logger)
     def create_user(name: str, password: str, email: str, telegram_user_id: str, training_length: int = 10) -> None:
         """
         Create user

@@ -6,14 +6,13 @@ from src.dto.schema import WordGetDTO, WordAddDTO
 from src.grpc.mapping_helper import pydantic_to_protobuf, convert_proto_to_pydantic
 from src.grpc.word_service import word_service_pb2
 from src.grpc.word_service.word_service_pb2_grpc import WordServiceServicer
-from src.log.logger import CustomLogger, log_decorator
+from src.log.logger import logger, log_decorator
 from src.service.word_service import WordService
 
 
 class WordServiceServicer(WordServiceServicer):
 
-    # TODO CRIT: Check it for API
-    @log_decorator(my_logger=CustomLogger())
+    @log_decorator(my_logger=logger)
     def get_words_by_user(self, request, context) -> word_service_pb2.GetListWordsByUserResponse:
         user_id = request.user_id
         training_length = request.training_length
@@ -33,13 +32,13 @@ class WordServiceServicer(WordServiceServicer):
         context.set_details("Response details: " + str(response))
         return response
 
-    @log_decorator(my_logger=CustomLogger())
+    @log_decorator(my_logger=logger)
     def add_new_word_from_dto(self, request, context):
         word_dto = convert_proto_to_pydantic(request, WordAddDTO)
         WordService.add_new_word_from_dto(word_dto)
         return empty_pb2.Empty()
 
-    @log_decorator(my_logger=CustomLogger())
+    @log_decorator(my_logger=logger)
     def add_new_word(self, request, context):
         user_name = request.user_name
         german_word = request.german_word

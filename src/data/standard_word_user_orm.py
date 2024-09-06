@@ -6,14 +6,14 @@ from sqlalchemy import select, insert, update
 from src.data.base_orm import BaseOrm
 from src.db.database import session_factory
 from src.dto.schema import StandardWordAddDTO, StandardWordDTO
-from src.log.logger import CustomLogger, log_decorator
+from src.log.logger import logger, log_decorator
 from src.model.standard_word_user import StandardWordUser
 
 
 class StandardWordUserOrm(BaseOrm):
 
     @staticmethod
-    @log_decorator(my_logger=CustomLogger())
+    @log_decorator(my_logger=logger)
     def find_word_by_id(standard_word_id: UUID) -> StandardWordAddDTO:
         """
         Get standard word word_id
@@ -31,7 +31,7 @@ class StandardWordUserOrm(BaseOrm):
             return word
 
     @staticmethod
-    @log_decorator(my_logger=CustomLogger())
+    @log_decorator(my_logger=logger)
     def create_list_new_words(new_words_list: List[StandardWordDTO]) -> None:
         """
         Create standard words on StandardWordUser
@@ -55,7 +55,7 @@ class StandardWordUserOrm(BaseOrm):
             session.commit()
 
     @staticmethod
-    @log_decorator(my_logger=CustomLogger())
+    @log_decorator(my_logger=logger)
     def update_counter_for_word(word_id: UUID, user_id: UUID, inc_amount_already_know, inc_amount_back_to_learning) -> None:
         if (inc_amount_already_know < 0) or (inc_amount_back_to_learning < 0):
             raise ValueError(

@@ -6,7 +6,7 @@ from src.dwh.dwh_service import DwhService
 from src.model.level_enum import LevelEnum
 from src.dto.schema import WordGetDTO, WordAddDTO, WordDTO, convert_word_dto_to_word_get_dto
 from src.data.word_orm import WordOrm
-from src.log.logger import log_decorator, CustomLogger
+from src.log.logger import log_decorator, logger
 from src.service.group_word_service import GroupWordService
 from src.service.level_service import LevelService
 from src.service.user_service import UserService
@@ -17,7 +17,7 @@ from src.model.word_type_enum import WordTypeEnum
 class WordService:
 
     @staticmethod
-    @log_decorator(my_logger=CustomLogger())
+    @log_decorator(my_logger=logger)
     def get_words_by_user(user_id: uuid.UUID, training_length: int = 10,
                               word_type: str = WordTypeEnum.custom.value) -> List[WordGetDTO]:
         """
@@ -31,7 +31,7 @@ class WordService:
         return training_set
 
     @staticmethod
-    @log_decorator(my_logger=CustomLogger())
+    @log_decorator(my_logger=logger)
     def add_new_word_from_dto(word: WordAddDTO) -> None:
         """
         Add new word for learning from dto to user (linked by user_id)
@@ -48,7 +48,7 @@ class WordService:
 
 
     @staticmethod
-    @log_decorator(my_logger=CustomLogger())
+    @log_decorator(my_logger=logger)
     def add_new_word(user_name: str, german_word: str, english_word: str, russian_word: str,
                      amount_already_know: int = 0, amount_back_to_learning: int = 0,
                      group_word_name: str = "CUSTOM_GROUP", level: str = LevelEnum.a1.value,

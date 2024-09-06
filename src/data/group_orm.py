@@ -1,4 +1,4 @@
-from src.log.logger import log_decorator, CustomLogger
+from src.log.logger import log_decorator, logger
 import uuid
 from typing import List, Union
 from sqlalchemy import insert, select, update, delete
@@ -13,7 +13,7 @@ class GroupOrm(BaseOrm):
     GroupOrm Class for object Group which allowed insert/get Group in database
     """
 
-    @log_decorator(my_logger=CustomLogger())
+    @log_decorator(my_logger=logger)
     @staticmethod
     def insert_group(group_name: GroupAddDTO) -> None:
         """
@@ -35,7 +35,7 @@ class GroupOrm(BaseOrm):
                 raise RuntimeError("Failed to retrieve created group")
         return None
 
-    @log_decorator(my_logger=CustomLogger())
+    @log_decorator(my_logger=logger)
     @staticmethod
     def get_group_by_name(group_name: str) -> Union[GroupDTO, None]:
         """
@@ -53,7 +53,7 @@ class GroupOrm(BaseOrm):
             else:
                 return None
 
-    @log_decorator(my_logger=CustomLogger())
+    @log_decorator(my_logger=logger)
     @staticmethod
     def get_group_by_id(group_id: uuid.UUID) -> Union[GroupDTO, None]:
         """
@@ -72,7 +72,7 @@ class GroupOrm(BaseOrm):
             else:
                 return None
 
-    @log_decorator(my_logger=CustomLogger())
+    @log_decorator(my_logger=logger)
     @staticmethod
     def get_list_groups_name_by_user(user_name: str) -> List[str]:
         """
@@ -88,7 +88,7 @@ class GroupOrm(BaseOrm):
             groups = result.scalars().all()
             return groups
 
-    @log_decorator(my_logger=CustomLogger())
+    @log_decorator(my_logger=logger)
     @staticmethod
     def update_group(group_id: uuid.UUID, new_group_name: str) -> None:
         """
@@ -109,7 +109,7 @@ class GroupOrm(BaseOrm):
                 raise ValueError(f"Group with ID {group_id} not found")
             session.commit()
 
-    @log_decorator(my_logger=CustomLogger())
+    @log_decorator(my_logger=logger)
     @staticmethod
     def delete_group(group_id: uuid.UUID) -> None:
         """

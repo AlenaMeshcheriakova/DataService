@@ -5,14 +5,14 @@ from uuid import UUID
 from src.model.action_dwh_enum import ActionDWHEnum
 from src.dto.schema import LevelDTO, convert_full_level_dto_to_level_dto, LevelAddDTO
 from src.dwh.dwh_service import DwhService
-from src.log.logger import log_decorator, CustomLogger
+from src.log.logger import log_decorator, logger
 from src.model.level_enum import LevelEnum
 from src.data.level_orm import LevelOrm
 
 class LevelService:
 
     @staticmethod
-    @log_decorator(my_logger=CustomLogger())
+    @log_decorator(my_logger=logger)
     def create_levels() -> None:
         """
         Create all standard levels (from LevelEnum) in DB.
@@ -26,7 +26,7 @@ class LevelService:
                             "New level was added")
 
     @staticmethod
-    @log_decorator(my_logger=CustomLogger())
+    @log_decorator(my_logger=logger)
     def create_level(level_name: str) -> None:
         new_level = LevelAddDTO(
             id=uuid.uuid4(),
@@ -36,7 +36,7 @@ class LevelService:
         return None
 
     @staticmethod
-    @log_decorator(my_logger=CustomLogger())
+    @log_decorator(my_logger=logger)
     def get_levels() -> List[LevelDTO]:
         """
         Get all levels from DB
@@ -46,7 +46,7 @@ class LevelService:
         return res_levels
 
     @staticmethod
-    @log_decorator(my_logger=CustomLogger())
+    @log_decorator(my_logger=logger)
     def get_level_id_by_name(level_enum: str) -> UUID:
         """
         Get Level id by level name(from LevelEnum)
@@ -57,7 +57,7 @@ class LevelService:
         return level_id
 
     @staticmethod
-    @log_decorator(my_logger=CustomLogger())
+    @log_decorator(my_logger=logger)
     def get_level_by_id(level_id: uuid.UUID) -> LevelDTO:
         level = LevelOrm.get_level_by_id(level_id)
         if level is None:
@@ -66,7 +66,7 @@ class LevelService:
         return level_res
 
     @staticmethod
-    @log_decorator(my_logger=CustomLogger())
+    @log_decorator(my_logger=logger)
     def update_level(level_id: uuid.UUID, new_level_name: str) -> None:
         level_to_update = LevelOrm.get_level_by_id(level_id)
         if level_to_update is None:
@@ -75,7 +75,7 @@ class LevelService:
         DwhService.send('Level', level_to_update, ActionDWHEnum.UPDATED, f"Level was updated to new lang name {new_level_name}")
 
     @staticmethod
-    @log_decorator(my_logger=CustomLogger())
+    @log_decorator(my_logger=logger)
     def delete_level(level_id: uuid.UUID) -> None:
         level_to_delete = LevelOrm.get_level_by_id(level_id)
         if level_to_delete is None:

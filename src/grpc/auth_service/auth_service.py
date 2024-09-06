@@ -3,14 +3,14 @@ from cfg.сonfig import settings
 from src.dto.schema import UserResponse, RegisterRequest
 from src.grpc.auth_service import auth_service_pb2
 from src.grpc.auth_service.client_auth_manager import GRPCClientAuthManager
-from src.log.logger import log_decorator, CustomLogger
+from src.log.logger import log_decorator, logger
 
 class AuthService:
 
     server_address = settings.get_AUTH_GRPC_conn
 
     @staticmethod
-    @log_decorator(my_logger=CustomLogger())
+    @log_decorator(my_logger=logger)
     def register(register_request: RegisterRequest) -> UserResponse:
         with GRPCClientAuthManager(AuthService.server_address) as auth_manager:
             stub = auth_manager.get_stub()

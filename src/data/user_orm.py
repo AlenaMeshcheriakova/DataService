@@ -6,7 +6,7 @@ from sqlalchemy import select, update
 
 from src.db.database import session_factory
 from src.dto.schema import UserCreateFullDTO, UserCreateTelegramDTO
-from src.log.logger import log_decorator, CustomLogger
+from src.log.logger import log_decorator, logger
 from src.model.userdb import UserDB
 from src.data.base_orm import BaseOrm
 
@@ -16,7 +16,7 @@ class UserOrm(BaseOrm):
     """
 
     @staticmethod
-    @log_decorator(my_logger=CustomLogger())
+    @log_decorator(my_logger=logger)
     def find_user_by_name(user_name: str) -> Union[UserCreateFullDTO, None]:
         """
         Get User object by user_name
@@ -65,7 +65,7 @@ class UserOrm(BaseOrm):
         return None
 
     @staticmethod
-    @log_decorator(my_logger=CustomLogger())
+    @log_decorator(my_logger=logger)
     def find_user_by_id(user_id: uuid.UUID) -> Union[UserCreateFullDTO, None]:
         """
         Get User object by user_id
@@ -91,7 +91,7 @@ class UserOrm(BaseOrm):
                 return None
 
     @staticmethod
-    @log_decorator(my_logger=CustomLogger())
+    @log_decorator(my_logger=logger)
     def create_user(new_user: UserCreateTelegramDTO) -> UserDB:
         """
         Create user by DTO

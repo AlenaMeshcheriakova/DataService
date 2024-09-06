@@ -5,7 +5,7 @@ from src.model.action_dwh_enum import ActionDWHEnum
 from src.dto.schema import GroupAddDTO
 from src.data.group_orm import GroupOrm
 from src.dwh.dwh_service import DwhService
-from src.log.logger import log_decorator, CustomLogger
+from src.log.logger import log_decorator, logger
 
 
 class GroupWordService:
@@ -14,7 +14,7 @@ class GroupWordService:
     """
 
     @staticmethod
-    @log_decorator(my_logger=CustomLogger())
+    @log_decorator(my_logger=logger)
     def get_groups_name_by_user_name(user_name: str) -> List[str]:
         """
         By user_name get list of users groups name
@@ -25,7 +25,7 @@ class GroupWordService:
         return res_group_list
 
     @staticmethod
-    @log_decorator(my_logger=CustomLogger())
+    @log_decorator(my_logger=logger)
     def create_group(new_group: GroupAddDTO) -> None:
         """
         Add new group to the DB
@@ -36,7 +36,7 @@ class GroupWordService:
         DwhService.send('Group', added_group, ActionDWHEnum.CREATED, "New group from DTO was added")
 
     @staticmethod
-    @log_decorator(my_logger=CustomLogger())
+    @log_decorator(my_logger=logger)
     def get_group_id_by_group_name(group_name: str) -> UUID:
         """
         Get Group Object by group_name.
@@ -50,7 +50,7 @@ class GroupWordService:
         return res_group_id
 
     @staticmethod
-    @log_decorator(my_logger=CustomLogger())
+    @log_decorator(my_logger=logger)
     def is_group_created(group_name: str) -> bool:
         """
         Check that group with group_name exist
@@ -64,7 +64,7 @@ class GroupWordService:
             return True
 
     @staticmethod
-    @log_decorator(my_logger=CustomLogger())
+    @log_decorator(my_logger=logger)
     def update_group(group_id: UUID, new_group_name: str) -> None:
         """
         Update an existing group's name
@@ -82,7 +82,7 @@ class GroupWordService:
         DwhService.send('Group', group_to_update, ActionDWHEnum.UPDATED, f"Group with ID {group_id} was updated")
 
     @staticmethod
-    @log_decorator(my_logger=CustomLogger())
+    @log_decorator(my_logger=logger)
     def delete_group(group_id: UUID) -> None:
         """
         Delete a group from the DB
@@ -96,7 +96,7 @@ class GroupWordService:
         DwhService.send('Group', group_to_delete, ActionDWHEnum.DELETED, f"Group with ID {group_id} was deleted")
 
     @staticmethod
-    @log_decorator(my_logger=CustomLogger())
+    @log_decorator(my_logger=logger)
     def update_group(group_id: UUID, new_group_name: str) -> None:
         """
         Update an existing group's name
@@ -114,7 +114,7 @@ class GroupWordService:
         DwhService.send('Group', group_to_update, ActionDWHEnum.UPDATED, f"Group with ID {group_id} was updated")
 
     @staticmethod
-    @log_decorator(my_logger=CustomLogger())
+    @log_decorator(my_logger=logger)
     def delete_group(group_id: UUID) -> None:
         """
         Delete a group from the DB
