@@ -71,7 +71,7 @@ class Settings(BaseSettings):
     def get_AUTH_GRPC_conn(self) -> str:
         return f"{self.GRPC_AUTH_HOST}:{str(self.GRPC_AUTH_PORT)}"
 
-    # model_config = SettingsConfigDict(env_file="cfg/development/.env")
+    model_config = SettingsConfigDict(env_file="cfg/development/.env")
 
-# load_dotenv()
+load_dotenv()
 settings = Settings()
